@@ -15,7 +15,8 @@
       "npm": "./rules/npm.md",
       "testing": "./rules/testing.md",
       "typescript-javascript": "./rules/typescript-javascript.md",
-      "vue": "./rules/vue.md"
+      "vue": "./rules/vue.md",
+      "writing": "./rules/writing.md"
    },
    "prompts": {
       "add-skill": "./prompts/add-skill.md",
