@@ -7,8 +7,7 @@ trigger: always_on
    * Look around and use existing patterns and code when possible. Look for:
       * Similar components and use their patterns
       * Library code you can reuse
-      * Existing dependencies from package.json or Cargo.toml that you should use instead
-      of writing new code
+      * Existing dependencies from package.json or Cargo.toml that you should use
    * If you see a pattern that is not used, consider adding it, but carefully and
      judiciously
    * Always consider the developer experience:

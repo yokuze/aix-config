@@ -15,3 +15,6 @@ You ABSOLUTELY must not:
      it before proceeding
    * DO NOT use `@deprecated` on anything unless you are explicitly asked to. Always fully refactor
      and delete old code as-needed instead of deprecating it
+   * DO NOT implement functionality that already exists in a library or package,
+     especially if that package is already installed in the project
+     * Examples: parsing, validation, formatting

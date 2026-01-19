@@ -20,6 +20,7 @@
    },
    "prompts": {
       "add-skill": "./prompts/add-skill.md",
-      "plan": "./prompts/plan.md"
+      "plan": "./prompts/plan.md",
+      "implement-plan": "./prompts/implement-plan.md"
    }
 }
