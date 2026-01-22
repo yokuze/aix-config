@@ -3,6 +3,11 @@ trigger: glob
 globs: **/*.ts
 ---
 
+Follow these standards:
+
+   * https://github.com/silvermine/silvermine-info/raw/refs/heads/master/coding-standards/typescript.md
+   * https://raw.githubusercontent.com/silvermine/silvermine-info/refs/heads/master/coding-standards.md
+
 ## General Code Style & Formatting
 
    * Use English for all code and documentation

@@ -10,4 +10,4 @@ globs: **/*.css,**/*.scss
    * Use BEM or other similar naming conventions for custom CSS
    * Use CSS variables for theme-able values
    * Consider adding a custom utility class to the global CSS/SCSS if it seems
-     necessary/used in multiple places, but don't go overboard
+     necessary/used in multiple places
