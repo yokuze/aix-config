@@ -18,3 +18,5 @@ You ABSOLUTELY must not:
    * DO NOT implement functionality that already exists in a library or package,
      especially if that package is already installed in the project
      * Examples: parsing, validation, formatting
+   * DO NOT disable linting rules (ESLint, oxlint, clippy, etc.) in the config to get
+     around linting errors. Fix the underlying issues
