@@ -1,6 +1,6 @@
 ---
 trigger: glob
-globs: **/*.ts
+globs: "**/*.ts"
 ---
 
 Follow these standards:

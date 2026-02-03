@@ -1,6 +1,6 @@
 ---
 trigger: glob
-globs: **/*.css,**/*.scss
+globs: "**/*.css,**/*.scss"
 ---
 
    * If using a component library, prefer using the component's existing props etc. over

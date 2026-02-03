@@ -1,6 +1,6 @@
 ---
 trigger: glob
-globs: **/*.vue
+globs: "**/*.vue"
 ---
 
    * Assume Vue version 3.5+ unless you see otherwise in package.json
