@@ -3,6 +3,9 @@
    "skills": {
       "npm-search": {
          "path": "./skills/npm-search/"
+      },
+      "new-repo-setup": {
+         "path": "./skills/new-repo-setup/"
       }
    },
    "mcp": {},
