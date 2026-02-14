@@ -142,3 +142,5 @@ vite.config.ts.timestamp-*
 .aix/.tmp
 
 .windsurf
+.claude
+.cursor
