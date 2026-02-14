@@ -6,6 +6,9 @@
       },
       "new-repo-setup": {
          "path": "./skills/new-repo-setup/"
+      },
+      "learn": {
+         "path": "./skills/learn/"
       }
    },
    "mcp": {},
