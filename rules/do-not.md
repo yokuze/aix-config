@@ -17,6 +17,7 @@ trigger: always_on
      parsing, validation, formatting
    * ABSOLUTELY DO NOT disable linting rules (ESLint, oxlint, clippy, etc.) in the config
      to get around linting errors. Fix the underlying issues
+   * ABSOLUTELY DO NOT include `Co-Authored-By` statements in git commit messages
    * ABSOLUTELY DO NOT instruct me to do things like "run the dev server and test it out,"
      "run the tests," "install this module", or anything else that you can do yourself as
      part of the task
