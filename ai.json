@@ -39,6 +39,7 @@
       "git": "./rules/git.md",
       "mcps": "./rules/mcps.md",
       "npm": "./rules/npm.md",
+      "tauri": "./rules/tauri.md",
       "testing": "./rules/testing.md",
       "typescript-javascript": "./rules/typescript-javascript.md",
       "vue": "./rules/vue.md",
