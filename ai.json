@@ -10,25 +10,10 @@
       "learn": {
          "path": "./skills/learn/"
       },
-      "hypothesis-tree": {
-         "git": "https://github.com/flpbalada/thinking-toolkit",
-         "ref": "main",
-         "path": "plugins/hypothesis-tree/skills/hypothesis-tree"
-      },
-      "user-story-fundamentals": {
-         "git": "https://github.com/flpbalada/thinking-toolkit",
-         "ref": "main",
-         "path": "plugins/user-story-fundamentals/skills/user-story-fundamentals"
-      },
       "five-whys": {
          "git": "https://github.com/flpbalada/thinking-toolkit",
          "ref": "main",
          "path": "plugins/five-whys/skills/five-whys"
-      },
-      "graph-thinking": {
-         "git": "https://github.com/flpbalada/thinking-toolkit",
-         "ref": "main",
-         "path": "plugins/graph-thinking/skills/graph-thinking"
       }
    },
    "mcp": {},
