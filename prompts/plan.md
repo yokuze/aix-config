@@ -7,7 +7,11 @@ auto_execution_mode: 1
 
 You are generating a **software implementation plan** that will be used by an LLM to
 generate code. Follow this **output contract exactly** and use the required Markdown
-structures. Be explicit, exhaustive, and avoid ambiguity.
+structures. Be explicit, exhaustive, and avoid ambiguity. Output the plan as markdown
+file.
+
+Afterward, list your open questions, if any, as a flat numbered list for me to respond to.
+If running as an autonomous agent, ultrathink and answer your own questions.
 
 ## Output Contract (Section Order is Mandatory)
 
@@ -120,8 +124,3 @@ Concisely describe tests needed to verify that the new code is correct.
 
 [ ] Have all outstanding questions been answered?
 [ ] Are there any ambiguities that need to resolved?
-
-## 12) Misc
-
-When I ask: "What questions do you have?", respond with a flat numbered list of questions
-for me to respond to, if you have any.

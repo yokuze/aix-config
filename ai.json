@@ -9,14 +9,25 @@
       },
       "learn": {
          "path": "./skills/learn/"
-      },
-      "five-whys": {
-         "git": "https://github.com/flpbalada/thinking-toolkit",
-         "ref": "main",
-         "path": "plugins/five-whys/skills/five-whys"
       }
    },
-   "mcp": {},
+   "mcp": {
+      "mcp-server-tauri": {
+         "command": "npx -y @hypothesi/tauri-mcp-server@latest"
+      },
+      "context7": {
+         "command": "npx",
+         "args": [
+            "-y @upstash/context7-mcp@latest"
+         ]
+      },
+      "playwright": {
+         "command": "npx",
+         "args": [
+            "-y @playwright/mcp@latest"
+         ]
+      }
+   },
    "rules": {
       "general": "./rules/general.md",
       "css-scss": "./rules/css-scss.md",
@@ -28,7 +39,12 @@
       "testing": "./rules/testing.md",
       "typescript-javascript": "./rules/typescript-javascript.md",
       "vue": "./rules/vue.md",
-      "writing": "./rules/writing.md"
+      "writing": "./rules/writing.md",
+      "dependency-licenses": "./rules/dependency-licenses.md",
+      "libraries": "./rules/libraries.md",
+      "markdown": "./rules/markdown.md",
+      "sql": "./rules/sql.md",
+      "swift": "./rules/swift.md"
    },
    "prompts": {
       "add-skill": "./prompts/add-skill.md",
