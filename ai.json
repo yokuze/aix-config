@@ -49,6 +49,8 @@
    "prompts": {
       "add-skill": "./prompts/add-skill.md",
       "plan": "./prompts/plan.md",
-      "implement-plan": "./prompts/implement-plan.md"
+      "implement-plan": "./prompts/implement-plan.md",
+      "rebase": "./prompts/rebase.md",
+      "commit": "./prompts/commit.md"
    }
 }
