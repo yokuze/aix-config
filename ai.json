@@ -51,6 +51,7 @@
       "plan": "./prompts/plan.md",
       "implement-plan": "./prompts/implement-plan.md",
       "rebase": "./prompts/rebase.md",
-      "commit": "./prompts/commit.md"
+      "commit": "./prompts/commit.md",
+      "justdoit": "./prompts/justdoit.md"
    }
 }
