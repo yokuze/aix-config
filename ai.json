@@ -12,19 +12,22 @@
       }
    },
    "mcp": {
-      "mcp-server-tauri": {
-         "command": "npx -y @hypothesi/tauri-mcp-server@latest"
+      "tauri": {
+         "command": "npx",
+         "args": [
+            "@hypothesi/tauri-mcp-server"
+         ]
       },
       "context7": {
          "command": "npx",
          "args": [
-            "-y @upstash/context7-mcp@latest"
+            "@upstash/context7-mcp"
          ]
       },
       "playwright": {
          "command": "npx",
          "args": [
-            "-y @playwright/mcp@latest"
+            "@playwright/mcp"
          ]
       }
    },
