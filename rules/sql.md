@@ -12,8 +12,6 @@ paths:
 
 ## Formatting Rules
 
-### Indentation and Alignment
-
 * **Vertically align** sibling elements of queries
 * **Indent** new lines in statements
 * **Start new lines with commas** when splitting comma-delimited text
@@ -52,7 +50,7 @@ ORDER BY column1        -- ORDER BY aligned with FROM/JOIN/WHERE
 ;                       -- Semicolon on new line
 ```
 
-## Naming Conventions
+## Naming
 
 * **UPPERCASE**: SQL keywords, functions (SELECT, FROM, WHERE, COUNT)
 * **PascalCase**: Table and view names, plural form (e.g., `Users`, `UserProfiles`)

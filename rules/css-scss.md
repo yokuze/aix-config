@@ -5,10 +5,9 @@ paths:
 ---
 
 * Always use SCSS, not CSS
-* If using a component library, use the component's existing props or built-in options
-  over custom styling. Reuse appropriate CSS classes
-* If none are available, prefer pre-existing utility classes over custom styling
-* Avoid ad-hoc CSS unless absolutely necessary
+* If using a component library, use existing components, props or built-in options over
+  custom styling. Reuse appropriate CSS classes
+   * If none are available, prefer pre-existing utility classes over custom styling
 * Consider adding a custom utility class to the global SCSS if a pattern is used in
   multiple places (e.g. text truncation, screen reader text, grid patterns)
 * Use CSS logical properties: `margin-inline-start`, not `margin-left`;
@@ -19,15 +18,14 @@ paths:
 
 * DO NOT use `@extend`
 * DO NOT override `line-height` to values other than `1` unless you have a very good
-   reason
+  reason
 
 ## SCSS API
 
 If the project auto-injects SCSS namespaces via its build config (e.g. Vite's
-`css.preprocessorOptions`), these are generally libraries and you should prefer these
-mixins/vars/functions over hard-coded values.
-
-Check the project's `vite.config.ts` or equivalent to see what is available.
+`css.preprocessorOptions`), prefer using the mixins/vars/functions from those libraries
+over hard-coded values. Check the project's `vite.config.ts` or equivalent to see what is
+available.
 
 ## Style Block Structure
 

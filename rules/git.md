@@ -6,7 +6,6 @@ Refer to this when running git commands:
 ## ABSOLUTELY DO NOT
 
 * ABSOLUTELY DO NOT `git push` without express permission
-* ABSOLUTELY DO NOT include `Co-Authored-By` statements in git commit messages
 
 ## Commit Message Format
 

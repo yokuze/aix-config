@@ -14,7 +14,6 @@ Follow these standards:
 
 ## Core Principles
 
-* Use `let` and `const` instead of `var`
 * Prefer `const` for immutable variables
 * Group consecutive declarations in one statement; avoid separate `const` for simple,
   related assignments
@@ -22,8 +21,6 @@ Follow these standards:
 * Use template literals when they improve readability; avoid multi-line template literals
 * Use `String()` for explicit string conversion
 * Prefer `async/await` over Promise chaining
-* Use `Promise.all()` for concurrent async operations
-* Use English for all code and documentation
 * Always wrap comments to utilize the full line length
 * Code must be 140 characters or less; comments must be 91 characters or less
 * Use early returns to reduce indentation
