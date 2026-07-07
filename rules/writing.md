@@ -2,6 +2,20 @@
 description: "Write clear, specific prose that sounds human. Avoid patterns common to AI writing."
 ---
 
+## General
+
+Explain things in full words. Don't compress ideas into insider shorthand or single-term
+labels that assume I already know the concept. When you refer to a mechanism, describe
+what it does in plain language instead of naming it and moving on. Assume the reader is
+competent but not steeped in the same jargon, and would rather read one clear sentence
+than decode one dense word.
+
+Break long paragraphs up.
+
+Be concise.
+
+Use le mot juste.
+
 ## Content
 
 * **Be specific, not generic.** Replace vague claims of importance with concrete facts.
