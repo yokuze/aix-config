@@ -1,0 +1,4 @@
+interface:
+  display_name: "Write App Store Copy"
+  short_description: "Write specific, credible store listing copy"
+  default_prompt: "Use $write-app-store-copy to research and rewrite this app store listing."

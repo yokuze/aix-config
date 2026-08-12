@@ -1,0 +1,4 @@
+interface:
+  display_name: "App Store Readiness"
+  short_description: "Prepare Tauri apps for store release"
+  default_prompt: "Use $app-store-readiness to prepare this Tauri app for App Store, Google Play, and Microsoft Store submission."

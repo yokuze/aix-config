@@ -9,6 +9,12 @@
       },
       "learn": {
          "path": "./skills/learn/"
+      },
+      "app-store-readiness": {
+         "path": "./skills/app-store-readiness/"
+      },
+      "write-app-store-copy": {
+         "path": "./skills/write-app-store-copy/"
       }
    },
    "mcp": {
@@ -56,5 +62,6 @@
       "rebase": "./prompts/rebase.md",
       "commit": "./prompts/commit.md",
       "justdoit": "./prompts/justdoit.md"
-   }
+   },
+   "agents": {}
 }
