@@ -37,6 +37,9 @@ release gate; do not label an app "production-ready" because it builds locally.
 - Distinguish similarly named portals. For Apple, configure App ID capabilities in Apple Developer
   under Certificates, Identifiers & Profiles. App listing and submission fields live in App Store
   Connect. Give the correct navigation path.
+- Never treat a secret name, a recent write timestamp, or a nonempty value as credential proof.
+  Validate release credentials and variables with `references/credential-validation.md` before the
+  first remote build and after replacing or rotating any value.
 
 ## Workflow
 
@@ -84,7 +87,15 @@ release gate; do not label an app "production-ready" because it builds locally.
    use fictional accounts and data; localize screenshots that contain text. Verify the final
    upload slots in the relevant console because asset dimensions and required device sets move.
 
-6. Verify the product, not only the binary.
+6. Validate release credentials and variables.
+
+   Use `references/credential-validation.md`. Inventory every secret and variable referenced by
+   release workflows. Verify formats, parse cryptographic material, check related values belong
+   together, and authenticate against read-only provider endpoints where available. Put cheap,
+   non-destructive checks before resource creation and compilation in CI. Remove or mark invalid
+   credentials as blockers; do not leave them present merely to satisfy a presence check.
+
+7. Verify the product, not only the binary.
 
    Test clean install, upgrade, offline or failure behavior, permissions granted and denied,
    keyboard and touch paths, screen readers, scaling, external links, account creation and
@@ -92,14 +103,14 @@ release gate; do not label an app "production-ready" because it builds locally.
    listed feature. Run the platform-specific checks in the selected references on real devices
    where a simulator cannot prove the behavior.
 
-7. Assemble the review handoff.
+8. Assemble the review handoff.
 
    Use `references/release-dossier.md`. Supply working reviewer credentials, reset steps,
    hardware or sample-data instructions, test notes for non-obvious paths, feature flags,
    support contacts, and a rollback plan. Confirm servers, certificates, and purchase products
    are live for review.
 
-8. Make the release decision.
+9. Make the release decision.
 
    The release ledger must show every applicable hard gate as passed with evidence. Mark
    unknowns and policy changes as blockers. Keep a dated policy snapshot with the release so a
@@ -133,3 +144,5 @@ Deliver a concise release dossier containing:
   making a listing package.
 - `references/release-dossier.md` — the evidence ledger and reviewer handoff. Read before a
   submission or a production-readiness verdict.
+- `references/credential-validation.md` — credential, variable, provider-authentication, and CI
+  preflight proof. Read before configuring or running release automation.
