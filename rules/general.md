@@ -42,6 +42,11 @@
 * Files exporting functions/objects: kebab-case.js (e.g., `my-function.ts`)
 * Tests: `ClassTheyAreTesting.test.ts`
 * Avoid magic numbers and define constants
+* Name a helper for the specific thing it does, not the broad capability it reaches. If
+  the implementation is one API call, put that API in the name. `manual-popover.ts` that
+  sets `popover="manual"`, not `top-layer.ts`. An abstract name promises generality the
+  code does not have, and hides what every caller has to handle
+* Do not export a type alias that is used once inside its own file. Inline it
 
 ## Formatting Rules
 

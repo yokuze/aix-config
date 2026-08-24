@@ -1,0 +1,14 @@
+{
+   "name": "aix-config",
+   "version": "1.0.0",
+   "private": true,
+   "description": "AIX config, skills, and prompts",
+   "license": "MIT",
+   "scripts": {
+      "lint:prose": "node bin/lint-prose.mjs README.md rules skills prompts docs output-styles bin lib hooks",
+      "test:prose": "node bin/test-prose.mjs"
+   },
+   "devDependencies": {
+      "@vvago/vale": "3.17.1"
+   }
+}
