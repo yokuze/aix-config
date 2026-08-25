@@ -35,6 +35,15 @@
          "args": [
             "@playwright/mcp"
          ]
+      },
+      "fallow": {
+         "command": "npx",
+         "args": [
+            "-y",
+            "-p",
+            "fallow",
+            "fallow-mcp"
+         ]
       }
    },
    "rules": {

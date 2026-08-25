@@ -5,3 +5,7 @@
   project-specific rules say not to
    * Use the Tauri MCP when working within a Tauri app
    * Use Playwright for other projects
+* Use the fallow MCP in a TypeScript or JavaScript project before deleting an export, a
+  file, or a dependency, and before opening an MR. `trace_export` and `impact_closure`
+  name the consumers, `audit` reads the changed files, and `inspect_target` gathers the
+  evidence for one file or symbol in a single call
