@@ -27,7 +27,7 @@ use_try_shorthand = true
 
 ## Error Handling
 
-Use the `thiserror` crate to define error types. If there are only a few error types, or
+Use `thiserror` crate to define error types. If there are only a few error types, or
 you do not need serializable errors, you may define an error enum without using
 `thiserror`.
 

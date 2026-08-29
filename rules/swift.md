@@ -4,7 +4,7 @@ paths:
   - "**/Package.swift"
 ---
 
-These standards supplement the general Silvermine coding standards. Where Swift community
+These standards supplement the Silvermine coding standards. Where Swift community
 conventions conflict with the general standard, the Swift-specific rule takes precedence.
 
 ## Core Principles

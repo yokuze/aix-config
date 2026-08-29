@@ -8,12 +8,11 @@ Assume Vue 3.5+ with the Composition API and Single-File Components (SFCs) unles
 
 ## ABSOLUTELY DO NOT
 
-* ABSOLUTELY DO NOT use `v-html` in Vue templates; use `v-html-content` directive instead
-  (sanitizes via DOMPurify)
+* ABSOLUTELY DO NOT use with unsanitized inputs `v-html` in Vue templates
 
 ## SFC Structure
 
-Every component follows this block order:
+Follow this block order:
 
    1. `<template>`
    2. `<script lang="ts">` — type/interface exports and constants (no `setup`)
@@ -58,8 +57,6 @@ import { MyComponentProps }, MyComponent from './MyComponent.vue';
 
 ## Props
 
-### TypeScript interface props (preferred)
-
 Define a TypeScript interface in the non-setup `<script>` block and reference it with
 `defineProps<T>()`:
 
@@ -102,7 +99,7 @@ export type ButtonProps = IconOnlyButtonProps | LabelOnlyButtonProps;
 
 ### `defineModel`
 
-For v-model bindings, use `defineModel` (Vue 3.4+):
+For v-model bindings, use `defineModel`
 
 ```ts
 const modelValue = defineModel<boolean>({ default: false });
@@ -143,8 +140,6 @@ defineSlots<CardSlots>();
 </script>
 ```
 
-### Slot props
-
 Pass CSS classes and internal state to slot consumers via `v-bind`:
 
 ```vue
@@ -156,8 +151,6 @@ Pass CSS classes and internal state to slot consumers via `v-bind`:
    <h3 :id="titleID" :class="cardCSSClasses.cardTitle">{{ title }}</h3>
 </slot>
 ```
-
-### Checking slot existence
 
 Use `useSlots()` or `$slots` to conditionally render wrapper elements:
 
@@ -200,8 +193,6 @@ const thumbnail = useTemplateRef<typeof Thumbnail>('thumbnail');
 ```
 
 ## Component Composition
-
-### Dynamic element rendering
 
 Use `<component :is="...">` to switch between element types based on props:
 

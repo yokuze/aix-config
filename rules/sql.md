@@ -6,7 +6,6 @@ paths:
 ## Core Principles
 
 * Readability and clarity through vertical alignment
-* UPPERCASE keywords and functions
 * Explicit column names (never `SELECT *`)
 * Consistent formatting and indentation
 

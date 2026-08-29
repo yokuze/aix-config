@@ -17,13 +17,11 @@ Follow these standards:
 * Prefer `const` for immutable variables
 * Group consecutive declarations in one statement; avoid separate `const` for simple,
   related assignments
-* Avoid multi-line `const` declarations (complex objects get their own block)
 * Use template literals when they improve readability; avoid multi-line template literals
 * Use `String()` for explicit string conversion
 * Prefer `async/await` over Promise chaining
 * Always wrap comments to utilize the full line length
 * Code must be 140 characters or less; comments must be 91 characters or less
-* Use early returns to reduce indentation
 
 ## ABSOLUTELY DO NOT
 
@@ -53,11 +51,7 @@ const a = 1,
 
 ## Naming Conventions
 
-* Use PascalCase for classes
-* Use camelCase for variables, functions, and methods
-* Use snake_case for static functions
-* Use kebab-case for file and directory names
-* Use UPPERCASE for environment variables
+* See general Silvermine coding standards
 * Avoid magic numbers and define constants
 * Use `memo` as the accumulator in reduce functions
 * Acronyms: ALL_CAPS except when first letter of camelCase property
@@ -72,7 +66,6 @@ const a = 1,
 
 ## Functions & Logic
 
-* Avoid deeply nested blocks by using early returns and extracting logic
 * Use higher-order functions (map, filter, reduce) to simplify logic
 * Arrow function parameters must have parentheses and explicit returns (good: `(a) => {
   return value; }`, bad: `a => a.value`)
@@ -89,14 +82,13 @@ const a = 1,
 
 * Basic object/array destructuring: yes
 * Array destructuring with rest: yes
-* Object destructuring with rest: avoid (risky)
+* Object destructuring with rest: avoid
 * Array destructuring with ignores: use with caution
 * Renaming while destructuring: yes
 * Deep data destructuring: avoid (not readable)
 
 ## Types (TypeScript)
 
-* No implicit `any` types; never use `any`
 * Explicit types for exported variables
 * Explicit return types for functions
 * Use primitive types (`string`, `number`, `boolean`)
@@ -122,7 +114,6 @@ const a = 1,
 ## Error Handling
 
 * Prefer `instanceof` for error checking
-* Be cautious with string-based error checks
 
 ## Imports
 

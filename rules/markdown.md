@@ -3,12 +3,10 @@ paths:
   - "**/*.md"
 ---
 
-## Lists
+Always use `*` for unordered lists instead of `-`
 
-* Always use `*` for unordered lists instead of `-`
-* Include a newline before and after the list
+Include a newline before and after the list
 
-## Code Blocks
+Always include a tag to specify the language, even if it's `txt`
 
-* Always include a tag to specify the language, even if it's `txt`
-* Run `npm run standards` if available to lint with `markdownlint`
+Run `npm run standards` if available to lint with `markdownlint`

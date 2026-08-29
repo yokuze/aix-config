@@ -6,8 +6,8 @@ paths:
 
 * Always use SCSS, not CSS
 * If using a component library, use existing components, props or built-in options over
-  custom styling. Reuse appropriate CSS classes
-   * If none are available, prefer pre-existing utility classes over custom styling
+  custom styling
+   * Prefer pre-existing utility classes over custom styling
 * Consider adding a custom utility class to the global SCSS if a pattern is used in
   multiple places (e.g. text truncation, screen reader text, grid patterns)
 * Use CSS logical properties: `margin-inline-start`, not `margin-left`;
