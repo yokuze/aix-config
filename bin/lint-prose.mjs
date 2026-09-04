@@ -7,7 +7,7 @@
 // question, because a directory argument is walked in full. With no arguments it walks the
 // repository root, which is the slowest way to call this.
 //
-// Exits 1 when it finds an error-level term, so it works as a gate.
+// Exits 1 when it finds an error-level term, so CI can fail on it.
 
 import { collectFiles, lintFiles, valeBinary } from '../lib/prose.mjs';
 

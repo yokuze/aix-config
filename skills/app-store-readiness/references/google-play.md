@@ -1,4 +1,4 @@
-# Google Play gates
+# Google Play requirements
 
 Use this for Android publication. Sources were checked on 2026-08-08. API targets, console
 declarations, country requirements, and policy dates drift; check the linked pages during the
@@ -37,7 +37,7 @@ release and write the live requirement into the ledger.
 - If selling digital goods or subscriptions, apply the current Google Play billing policy and
   purchase, cancellation, restoration, and disclosure rules.
 
-## Account and test-track gates
+## Account and test-track requirements
 
 - Verify the developer identity, organization/trader information, bank/tax setup, countries,
   pricing, support contact, and release managers in Play Console.

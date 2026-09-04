@@ -36,7 +36,7 @@ Show the future consequence before asking for commitment. Keep investments under
 ## Implementation guidance
 
 - Define what value persists after each action: utility, expression, relationship, mastery, or social commitment.
-- Surface the next payoff and its timing in plain language.
+- Show the next payoff and its timing in plain language.
 - Provide safe respec, rename, reorder, and undo paths.
 - Make returning useful even when the player missed the expected time.
 - Separate cosmetic ownership from power where competitive fairness matters.

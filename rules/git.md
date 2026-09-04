@@ -58,7 +58,7 @@ These are the ONLY two kinds fo scoped commits allowed
 * Explain **why** — but only if the subject doesn't fully explain the commit on its own
 * Bodies are discouraged for simple commits. Only add a body when you have a reason to
   explain why the change was made
-* Describe the outcome or behavior change, not the implementation mechanism
+* Describe the outcome or behavior change, not how the code does it
 * Prefer plain language over technical jargon
 * Use markdown formatting for lists
 

@@ -44,7 +44,7 @@ details that prove them. Do not paste the positioning sentence into the listing 
 - Translate capabilities into use: what a person can accomplish, in which situation, and with what
   effort or constraint.
 - Prefer concrete nouns and verbs over praise. Name the action and result instead of calling the
-  experience "seamless," "powerful," or "intuitive."
+  experience `seamless`, `powerful`, or `intuitive`.
 - Use short headings that match questions a buyer actually has.
 - End on a desirable outcome, use occasion, or direct next step. Do not add a slogan merely to
   create a final line.

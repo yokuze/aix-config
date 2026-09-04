@@ -47,7 +47,7 @@ Keep restart fast and preserve state when the app backgrounds. A stage-select sc
 
 ## Risks and anti-patterns
 
-Numbered stages can become filler when each exists only to lengthen a map. Energy gates, arbitrary difficulty spikes, and three-star perfection requirements can turn a clean structure into pressure. A giant map may make progress feel insignificant.
+Numbered stages can become filler when each exists only to lengthen a map. Energy limits, arbitrary difficulty spikes, and three-star perfection requirements can turn a clean structure into pressure. A giant map may make progress feel insignificant.
 
 ## Accessibility and ethics
 

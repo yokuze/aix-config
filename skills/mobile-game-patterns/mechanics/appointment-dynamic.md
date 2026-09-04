@@ -96,7 +96,7 @@ Measure awareness of the schedule, participation by local hour and time zone, no
 
 A generous daily puzzle or weekend board set works if the puzzle remains claimable for a while and missed days do not destroy a streak. A small rolling archive is a better fit than a midnight cliff.
 
-Keep timed content secondary to the complete core game. Show the next puzzle time in the mode-selection scene and notify only after the player opts into that category. Never time-gate the main board, and do not use a countdown whose primary job is to sell more moves or lives.
+Keep timed content secondary to the complete core game. Show the next puzzle time in the mode-selection scene and notify only after the player opts into that category. Never put the main board behind a timer, and do not use a countdown whose primary job is to sell more moves or lives.
 
 ## References
 

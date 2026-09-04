@@ -124,7 +124,7 @@ walked in full, so name the narrowest scope that answers the question. With no a
 it walks the repository root, which is the slowest way to call it.
 
 `npm run lint:prose` exits non-zero when it finds an error-level term, which is what makes
-it usable as a gate.
+it usable as a CI check.
 
 To have Devin see the rules rather than only the failures, point its instructions at
 `output-styles/plain-english.md`. The failure message names the term and the check, and

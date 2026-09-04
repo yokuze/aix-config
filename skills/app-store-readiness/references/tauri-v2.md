@@ -1,4 +1,4 @@
-# Tauri v2 release gates
+# Tauri v2 release requirements
 
 Use this alongside the chosen store reference. Sources were checked on 2026-08-08; recheck the
 linked Tauri documentation and each platform's current build requirements during release.
@@ -52,7 +52,7 @@ linked Tauri documentation and each platform's current build requirements during
   also need notarization; this does not replace Mac App Store review.
 - If the app has an updater, verify signature validation, downgrade behavior, update failure,
   rollback, and release-channel separation. A store-distributed app must not bypass store review
-  with an unapproved update mechanism.
+  with an unapproved updater.
 
 ## Official sources
 

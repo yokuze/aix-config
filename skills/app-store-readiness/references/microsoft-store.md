@@ -1,4 +1,4 @@
-# Microsoft Store gates
+# Microsoft Store requirements
 
 Use this for Windows publication. Sources were checked on 2026-08-08. Confirm the current
 Partner Center workflow, accepted package type, and policy version before submission.

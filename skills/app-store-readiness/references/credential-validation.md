@@ -67,7 +67,7 @@ back for comparison.
 
 Stop the release path when a credential fails. Replace it from an authoritative source only after
 validating that source. If a credential belongs to the wrong account or team, remove it from the
-release environment so a presence-only gate cannot report a false pass.
+release environment so a presence-only check cannot report a false pass.
 
 Do not retry the same build after changing a secret when the job may already have captured its
 environment. Start a new workflow run with a new build identity.

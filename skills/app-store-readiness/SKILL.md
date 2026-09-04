@@ -6,7 +6,7 @@ description: Prepare a mobile or desktop app, especially a Tauri v2 app, for App
 # App store readiness
 
 Prepare a shipping app for the stores it will actually enter. Produce evidence for every
-release gate; do not label an app "production-ready" because it builds locally.
+release requirement; do not label an app "production-ready" because it builds locally.
 
 ## Operating rules
 
@@ -16,7 +16,7 @@ release gate; do not label an app "production-ready" because it builds locally.
   Refresh policy pages during the release, even if this skill has a recent policy snapshot.
 - Separate a store requirement, a law, a license obligation, a platform convention, and a
   recommended improvement. Cite the official source and the date checked for every hard
-  release gate.
+  release requirement.
 - Do not invent legal advice or claim that a document makes an app compliant. Flag cases
   that need qualified legal, privacy, tax, payments, healthcare, gambling, child-safety, or
   export-control review.
@@ -43,19 +43,19 @@ release gate; do not label an app "production-ready" because it builds locally.
 
 ## Workflow
 
-1. Inventory the release surface.
+1. Inventory what the release includes.
 
    Inspect the repository, build configuration, packages, native manifests, entitlements,
    capabilities, permissions, backend APIs, telemetry, payments, auth, content sources,
    and supported devices. Write a release ledger with owner, evidence, status, source URL,
-   and checked date for each gate.
+   and checked date for each requirement.
 
 2. Classify the app.
 
    Use `references/legal-and-product.md`. Record whether the app has accounts, user content,
    subscriptions or digital goods, ads, children, personal or sensitive data, regulated
    functions, hardware access, encryption, location, or content that varies by region. This
-   decides which conditional gates apply.
+   decides which conditional requirements apply.
 
 3. Apply store and Tauri requirements.
 
@@ -74,7 +74,7 @@ release gate; do not label an app "production-ready" because it builds locally.
    positive selection and an explicit "leave off" decision for capabilities and permissions. If a
    console choice cannot be derived, mark it as a decision or blocker instead of skipping it.
 
-4. Build the legal and support surface.
+4. Build the legal and support pages.
 
    Use `references/legal-and-product.md` to decide which documents and in-app destinations
    are needed. If a public site is not available, draft version-controlled Markdown files for
@@ -112,7 +112,7 @@ release gate; do not label an app "production-ready" because it builds locally.
 
 9. Make the release decision.
 
-   The release ledger must show every applicable hard gate as passed with evidence. Mark
+   The release ledger must show every applicable hard requirement as passed with evidence. Mark
    unknowns and policy changes as blockers. Keep a dated policy snapshot with the release so a
    later update can tell which rules were checked.
 

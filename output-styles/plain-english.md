@@ -21,7 +21,7 @@ Rewrite it.
 |---|---|
 | the directive lands on the wrapper | `renderComponentRoot` copies the vnode's `dirs` onto its root element |
 | a single-element root at every hop | `TooltipContent` renders `Presence`, which renders `TooltipContentImpl` |
-| `inset: auto` is load-bearing | without `inset: auto` the box renders at (652, 323) instead of (200, 100) |
+| `inset: auto` is `load-bearing` | without `inset: auto` the box renders at (652, 323) instead of (200, 100) |
 | it avoids collisions against the viewport | `data-side` stays `bottom` and the box extends past the container's edge |
 | that branch survives the top layer | `getClippingRect` tests `boundary === 'clippingAncestors'` first, so an explicit array never reaches the `isTopLayer` check |
 
@@ -48,7 +48,7 @@ Applies to review comments and summaries too. "This looks racy" is a label. "The
 * Avoid the future tense in requirements unless the surrounding document uses it.
 * Use realistic code examples.
 * Give the number, not "significantly faster".
-* Do not state significance. No "this marks a pivotal moment" or "highlights a broader
+* Do not state significance. No "this marks a turning point" or "highlights a broader
   trend". Facts speak on their own.
 * Attribute specifically or not at all. Name the source or drop the claim.
 * No emoji unless asked.

@@ -38,7 +38,7 @@ Calculate progress from durable state. Label the endpoint, current position, rem
 
 ## Examples
 
-- **Candy Crush Saga:** its level map makes the next gate and the distance through an episode visible.
+- **Candy Crush Saga:** its level map makes the next checkpoint and the distance through an episode visible.
 - **Clash Royale:** Trophy Road and reward tracks expose milestones along a continuous progression path.
 
 ## Risks and anti-patterns

@@ -1,4 +1,4 @@
-# Legal and product gates
+# Legal and product requirements
 
 Read this file before platform references. It decides which store rules, documents, and
 in-app views apply. This is a release workflow, not legal advice. Send unresolved questions
@@ -31,7 +31,7 @@ or analytics dashboards. A declaration based only on product intent is not evide
 | Account deletion | Users can create an account. | Put an easy-to-find deletion initiation in the app. Google Play also requires an external deletion request URL in Play Console. Delete associated data unless retention is legally justified and disclosed. |
 | Data export, access, correction, consent withdrawal | Applicable privacy law, app promise, or data type requires it. | Make the route usable, authenticated, and documented. Do not promise a deadline you cannot meet. |
 | Community rules, report, block, moderation, contact | Users can post or interact with user-generated content. | Provide reporting, blocking, moderation, and support paths. Include policy and response ownership. |
-| Age gate, parental flow, child-safety contact, family policy | The target audience includes children or the content warrants an age restriction. | Classify the audience accurately. Do not use general-audience defaults to avoid child protections. |
+| Age verification, parental flow, child-safety contact, family policy | The target audience includes children or the content warrants an age restriction. | Classify the audience accurately. Do not use general-audience defaults to avoid child protections. |
 | Refund, subscription, cancellation, and purchase terms | Paid features, recurring billing, or digital goods. | Explain price, renewal, cancellation, restoration, and platform purchase handling at the point of decision. |
 | Accessibility statement or contact | Required by a served jurisdiction, customer contract, or product promise. | Test the stated standard. An unsupported claim creates its own problem. |
 | Export, sanctions, regulated-service, tax, or sector disclosures | Encryption, cross-border distribution, finance, health, gambling, communications, or other regulated activity is involved. | Stop for the appropriate specialist. Store forms do not replace this work. |
@@ -82,7 +82,7 @@ request that may fail.
 Record the conclusion for every nontrivial dependency. Escalate incompatible, unknown,
 custom, or source-available licenses before release.
 
-## Regional and business gates
+## Regional and business requirements
 
 Store publication can expose the app in many jurisdictions. Assess the regions selected in each
 console and the developer's role. Check current platform processes for trader or business

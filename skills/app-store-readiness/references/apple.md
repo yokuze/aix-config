@@ -1,4 +1,4 @@
-# Apple store gates
+# Apple store requirements
 
 Use this for iOS, iPadOS, and macOS App Store releases. Sources were checked on 2026-08-08.
 Apple changes the review rules and App Store Connect upload slots, so re-open the sources during

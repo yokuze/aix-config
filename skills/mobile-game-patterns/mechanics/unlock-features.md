@@ -39,12 +39,12 @@ Store unlock state durably and grant it idempotently. Deep links and notificatio
 
 ## Examples
 
-- **Pokémon GO:** progression gates some capabilities. For example, Niantic documents Weekly Challenges as available from Trainer Level 13 and Candy XL collection from Level 31.
+- **Pokémon GO:** progression locks some capabilities. For example, Niantic documents Weekly Challenges as available from Trainer Level 13 and Candy XL collection from Level 31.
 - **Candy Crush Saga:** new blockers and episode areas appear along the level map as earlier play establishes the basic match loop.
 
 ## Risks and anti-patterns
 
-Locking basic settings, accessibility, account recovery, or core social safety is unacceptable. Excessive gates make the early game feel fake. A feature teased without a clear requirement can look like a paywall even when it is not.
+Locking basic settings, accessibility, account recovery, or core social safety is unacceptable. Excessive locks make the early game feel fake. A feature teased without a clear requirement can look like a paywall even when it is not.
 
 ## Accessibility and ethics
 

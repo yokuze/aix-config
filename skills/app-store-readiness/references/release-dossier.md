@@ -5,9 +5,9 @@ repository or release system; do not rely on an unrecorded console click.
 
 ## Release ledger
 
-Use one row per gate.
+Use one row per requirement.
 
-| Gate | Applies | Owner | Evidence | Source and checked date | Status |
+| Requirement | Applies | Owner | Evidence | Source and checked date | Status |
 | --- | --- | --- | --- | --- | --- |
 | Example: Google Play Data safety | Yes | Privacy owner | Data map and Console export | Google policy, 2026-08-08 | Passed |
 
@@ -40,7 +40,7 @@ Before submission, have someone who did not build the release complete this sequ
 4. Find privacy, support, legal notices, account deletion, and subscription controls where they
    apply.
 5. Compare the store listing and declarations against the app and observed network behavior.
-6. Confirm the release ledger has evidence for every applicable hard gate.
+6. Confirm the release ledger has evidence for every applicable hard requirement.
 
 If the independent pass cannot reproduce a claimed result, mark it blocked. Do not replace the
 evidence with a confidence statement.

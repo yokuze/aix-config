@@ -9,7 +9,7 @@ Word lists live in `styles/plain-english/`, in Vale's rule format. `hooks/check-
 reads those lists and checks the reply before it is sent.
 
 If a sentence refers to a thing, name that thing. If it
-asserts a behavior, give the value or say where the behavior is defined. Avoid metaphors like "belt-and-suspenders," "seam," etc.
+asserts a behavior, give the value or say where the behavior is defined. Avoid metaphors.
 
 Use specific, common technical terms.
 
