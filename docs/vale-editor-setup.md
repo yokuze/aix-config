@@ -140,6 +140,10 @@ Edit `styles/plain-english/vague.yml` for terms with no plain use, or
 `styles/plain-english/substitutions.yml` for terms with a replacement. Both are Vale rule
 files, so every tool above picks the change up with no further step.
 
+A term that has several plain replacements, where the right one depends on what the
+writer meant, goes in `styles/plain-english/jargon.yml` instead. It blocks and asks the
+writer to name the actual thing, rather than reporting a single fixed swap.
+
 `styles/plain-english/british.yml` is generated. `bin/build-british.mjs` derives its 2286
 British spellings from VarCon, keeping the words at SCOWL level 50 and below and dropping
 any spelling that American dictionaries prefer. Add a word to `substitutions.yml` rather

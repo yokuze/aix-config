@@ -18,6 +18,7 @@ sentence with neither is a label, and a label reads as an explanation while carr
 |---|---|
 | `output-styles/plain-english.md` | the rules, and the only copy of them |
 | `styles/plain-english/vague.yml` | terms with no plain use. Blocked |
+| `styles/plain-english/jargon.yml` | terms with several plain uses. Blocked |
 | `styles/plain-english/substitutions.yml` | terms with a plain replacement. Reported |
 | `styles/plain-english/british.yml` | British spellings. Blocked. Generated |
 | `hooks/check-prose.mjs` | agent hook: checks replies and written files |
@@ -65,8 +66,8 @@ that already carries a banned term elsewhere does not block work that never touc
 so blocking only keeps the turn open and the correction arrives as a second message. No
 hook event runs before an assistant message reaches the user.
 
-Both block on `vague.yml` and on `british.yml`, and on `Vale.Repetition`, which catches a
-word typed twice in a row. `Stop` also blocks on em dashes and semicolons in prose.
+Both block on `vague.yml`, `jargon.yml` and `british.yml`, and on `Vale.Repetition`, which
+catches a word typed twice in a row. `Stop` also blocks on em dashes and semicolons in prose.
 Neither blocks on `substitutions.yml`, because those words have a legitimate use when
 quoting a spec or someone else's copy, and a false positive should not stop a turn. vale
 parses Markdown and source comments, so a symbol named `mechanism` is not a hit, and a
