@@ -6,7 +6,7 @@
 #
 # Consumed by:
 #   - vale (https://vale.sh), if installed
-#   - hooks/check-prose.mjs, which reads the `tokens` list directly
+#   - hooks/check-prose.mjs, which shells out to it
 extends: existence
 message: "'%s' is a label, not an explanation. Name the thing or give the value."
 level: error
