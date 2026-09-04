@@ -132,6 +132,12 @@ the style file holds the reasoning behind them.
 
 ## Adding or changing a term
 
+The Claude Code hooks resolve the config per path: the nearest `.vale.ini` above the file,
+or above the working directory when checking a reply. `lib/prose.mjs` passes it as
+`--config`, and vale resolves a relative `StylesPath` against the config file, so a
+project with its own vale package needs no further wiring. Run `vale sync` in that project
+first, because an unsynced package makes vale fail and the check is then skipped.
+
 `Vale.Repetition` is on in both `.vale.ini` sections. It catches a word typed twice in a
 row, and it ships inside the vale binary, so there is no rule file to edit and no
 `vale sync` to run.

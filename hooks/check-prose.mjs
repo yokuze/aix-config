@@ -26,7 +26,29 @@
 //   "PostToolUse": [ { "matcher": "Write|Edit", "hooks": [ { ...same... } ] } ]
 
 import { existsSync, readFileSync } from 'node:fs';
-import { isChecked, isSkipped, lintFiles, lintText, valeBinary } from '../lib/prose.mjs';
+import { dirname } from 'node:path';
+import { configFor, isChecked, isSkipped, isUnsynced, lintFiles, lintText, valeBinary } from '../lib/prose.mjs';
+
+const VALE_FAILED = 'Prose check skipped: vale could not run. Try `vale sync` in this project.';
+
+/**
+ * Reports and stands down when the config governing this path has no rules to apply.
+ *
+ * A project pointing at a vale package it has not synced is the case that matters. vale
+ * finds no styles, exits 0, and reports nothing, which is indistinguishable from prose
+ * that passed. Better to say the check did not happen.
+ */
+function standDownIfUnsynced(startDir) {
+   const config = configFor(startDir);
+
+   if (!isUnsynced(config)) {
+      return;
+   }
+   process.stdout.write(JSON.stringify({
+      systemMessage: `Prose check skipped: ${config} names vale packages that are not synced. Run \`vale sync\` there.`,
+   }));
+   process.exit(0);
+}
 
 function readPayload() {
    try {
@@ -195,10 +217,13 @@ if (event === 'PostToolUse') {
       }
    }
 
+   standDownIfUnsynced(dirname(file));
+
    // One file, so the scope is as narrow as it gets. No directory is walked.
    const alerts = lintFiles([ file ]);
 
    if (alerts === null) {
+      process.stdout.write(JSON.stringify({ systemMessage: VALE_FAILED }));
       process.exit(0);
    }
 
@@ -212,6 +237,8 @@ if (event === 'PostToolUse') {
    });
 }
 
+standDownIfUnsynced(process.cwd());
+
 const reply = lastAssistantText(payload.transcript_path ?? '');
 
 if (!reply.trim()) {
@@ -221,6 +248,7 @@ if (!reply.trim()) {
 const alerts = lintText(reply, '.md');
 
 if (alerts === null) {
+   process.stdout.write(JSON.stringify({ systemMessage: VALE_FAILED }));
    process.exit(0);
 }
 
