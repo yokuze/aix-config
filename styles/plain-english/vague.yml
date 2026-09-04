@@ -28,6 +28,8 @@ tokens:
   - testament
   - seam
   - surface
+  - machinery
+  - mechanisms?
   # Intensifiers that assert importance instead of showing it
   - crucial
   - vital
