@@ -5,6 +5,7 @@
    "description": "AIX config, skills, and prompts",
    "license": "MIT",
    "scripts": {
+      "build:british": "node bin/build-british.mjs",
       "lint:prose": "node bin/lint-prose.mjs README.md rules skills prompts docs output-styles bin lib hooks",
       "test:prose": "node bin/test-prose.mjs"
    },

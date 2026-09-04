@@ -19,11 +19,13 @@ sentence with neither is a label, and a label reads as an explanation while carr
 | `output-styles/plain-english.md` | the rules, and the only copy of them |
 | `styles/plain-english/vague.yml` | terms with no plain use. Blocked |
 | `styles/plain-english/substitutions.yml` | terms with a plain replacement. Reported |
+| `styles/plain-english/british.yml` | British spellings. Blocked. Generated |
 | `hooks/check-prose.mjs` | agent hook: checks replies and written files |
 | `rules/writing.md` | a pointer to the output style |
 | `.vale.ini` | vale's config. `@vvago/vale` is a devDependency |
 | `lib/prose.mjs` | the vale calls, shared by the linter and the hook |
 | `bin/lint-prose.mjs` | the linter. Takes paths, so it can be scoped |
+| `bin/build-british.mjs` | rebuilds `british.yml` from VarCon |
 | `docs/vale-editor-setup.md` | VS Code, Zed and Devin |
 
 Editor setup for VS Code, Zed and Devin is in `docs/vale-editor-setup.md`.
@@ -33,6 +35,7 @@ Editor setup for VS Code, Zed and Devin is in `docs/vale-editor-setup.md`.
 | `npm run lint:prose` | lints the content directories, named explicitly |
 | `node bin/lint-prose.mjs <path...>` | lints just those files or directories |
 | `npm run test:prose` | checks the Vue two-pass still reads template, script and style |
+| `npm run build:british` | refetches VarCon and rewrites `british.yml` |
 
 `aix` 0.6.0 installs skills, MCP servers, rules and prompts. It does not install output
 styles or hooks, so those two are symlinked by hand:
@@ -62,10 +65,12 @@ that already carries a banned term elsewhere does not block work that never touc
 so blocking only keeps the turn open and the correction arrives as a second message. No
 hook event runs before an assistant message reaches the user.
 
-Both block on `vague.yml`, and `Stop` also blocks on em dashes and semicolons in prose.
+Both block on `vague.yml` and on `british.yml`, and on `Vale.Repetition`, which catches a
+word typed twice in a row. `Stop` also blocks on em dashes and semicolons in prose.
 Neither blocks on `substitutions.yml`, because those words have a legitimate use when
 quoting a spec or someone else's copy, and a false positive should not stop a turn. vale
-parses Markdown and source comments, so a symbol named `mechanism` is not a hit.
+parses Markdown and source comments, so a symbol named `mechanism` is not a hit, and a
+`colourScheme` in backticks is not one either.
 
 ## After you edit a file here
 

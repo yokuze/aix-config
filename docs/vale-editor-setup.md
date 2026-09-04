@@ -132,9 +132,43 @@ the style file holds the reasoning behind them.
 
 ## Adding or changing a term
 
+`Vale.Repetition` is on in both `.vale.ini` sections. It catches a word typed twice in a
+row, and it ships inside the vale binary, so there is no rule file to edit and no
+`vale sync` to run.
+
 Edit `styles/plain-english/vague.yml` for terms with no plain use, or
 `styles/plain-english/substitutions.yml` for terms with a replacement. Both are Vale rule
 files, so every tool above picks the change up with no further step.
+
+`styles/plain-english/british.yml` is generated. `bin/build-british.mjs` derives its 2286
+British spellings from VarCon, keeping the words at SCOWL level 50 and below and dropping
+any spelling that American dictionaries prefer. Add a word to `substitutions.yml` rather
+than to it, and run `npm run build:british` to pick up a new VarCon release.
+
+## Why not vale's spelling check
+
+vale has a [`spelling`](https://docs.vale.sh/checks/spelling) extension point, and reading
+the docs it looks like the answer. It is not, and the numbers say why. Measured against
+this repo's 82 files and against all 2286 words in `british.yml`:
+
+| Dictionary | Rejects, of 2286 | False positives here |
+|---|---|---|
+| vale's built-in `en_US-web` | 317 | 0 |
+| `LibreOffice/dictionaries` `en_US` | 2281 | 242 words |
+| `wooorm/dictionaries` `en` | 2281 | 242 words |
+| SCOWL `en_US-large` | 2192 | 209 words |
+| `en_US` plus 16k cspell tech terms and camelCase filters | 2281 | 105 words |
+| SCOWL `en_US-large`, same additions | 2192 | 80 words |
+
+vale's own dictionary holds the British forms, so it passes `colour`, `behaviour`,
+`organise` and `centre`. A replacement dictionary rejects almost every British spelling,
+but then rejects `Tauri`, `oxlint`, `subagent`, `replayable` and 238 other words that are
+not misspelled. Every step that cuts the false positives accepts more British spellings,
+because one dial moves both: `en_US-large` gives back 25 real words and 89 British ones.
+
+`british.yml` sits outside that trade. It carries 2286 spellings, hits none of this
+repo's words, and names the American spelling instead of asking "did you mean". What it
+does not do is catch ordinary typos, which is a different job and no rule here does it.
 
 Run `npm run test:prose` afterwards. It checks that a Vue component is still read in full:
 the template's prose, a `///` comment in the script block, and a `//` comment in the SCSS

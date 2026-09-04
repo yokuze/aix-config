@@ -85,6 +85,8 @@ The terms to avoid live in `styles/plain-english/`, in Vale's rule format:
 
 * `vague.yml` blocks metaphors and intensifiers that stand in for a fact.
 * `substitutions.yml` reports words with a plain replacement.
+* `british.yml` blocks British spellings and names the American one. Generated from
+  VarCon by `npm run build:british`, so it is not hand-edited.
 
 Those files are the only place the lists live. Do not restate them here or in a rule file.
 `hooks/check-prose.mjs` reads them and reports on the response before it is sent.

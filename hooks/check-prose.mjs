@@ -94,10 +94,10 @@ function report({ alerts, problems, subject }) {
             ? `\nAlso reported, your call: ${[ ...new Set(reported.map((a) => { return a.Message; })) ].join(' ')}`
             : '';
 
+   // Each rule file words its own message, and repeating them beats one sentence written to
+   // cover all of them: a British spelling and a vague term need different fixes.
    if (blocked.length) {
-      const terms = [ ...new Set(blocked.map((a) => { return a.Match; })) ];
-
-      problems.unshift(`Blocked terms: ${terms.join(', ')}. Each is a label, not an explanation. Name the thing or give the value.`);
+      problems.unshift(...new Set(blocked.map((a) => { return a.Message; })));
    }
 
    if (!problems.length) {
@@ -107,13 +107,21 @@ function report({ alerts, problems, subject }) {
       process.exit(0);
    }
 
+   // The label test only answers a vague-term block. A misspelling or an em dash has a
+   // fix that does not involve going to find a value.
+   const labelTest = blocked.some((a) => { return a.Check === 'plain-english.vague'; })
+      ? [
+         'The test: if a sentence refers to a thing, name that thing. If it asserts a behavior,',
+         'give the value or say where the behavior is defined. A sentence with neither is a label.',
+         'If you do not have the value, go and measure it, then rewrite.',
+      ]
+      : [];
+
    const reason = [
       `${subject} breaks the Plain English output style.`,
       ...problems.map((p) => { return `- ${p}`; }),
       '',
-      'The test: if a sentence refers to a thing, name that thing. If it asserts a behavior,',
-      'give the value or say where the behavior is defined. A sentence with neither is a label.',
-      'If you do not have the value, go and measure it, then rewrite.',
+      ...labelTest,
       'Send the corrected text only. Do not mention this correction or what you changed.',
    ].join('\n') + notes;
 
