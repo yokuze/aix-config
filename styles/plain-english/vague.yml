@@ -20,7 +20,8 @@ tokens:
   - belt.and.suspenders
   - under the hood
   - belt.and
-  - gated
+  - gat(?:e|es|ed|ing)
+  - gatekeepers?
   # Vague nouns that name a category instead of the thing
   - tapestry
   - realm
