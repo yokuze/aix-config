@@ -21,7 +21,7 @@ sentence with neither is a label, and a label reads as an explanation while carr
 | `styles/plain-english/jargon.yml` | terms with several plain uses. Blocked |
 | `styles/plain-english/substitutions.yml` | terms with a plain replacement. Reported |
 | `styles/plain-english/british.yml` | British spellings. Blocked. Generated |
-| `hooks/check-prose.mjs` | agent hook: checks replies and written files |
+| `hooks/check-prose.mjs` | agent hook: checks replies, written files and Bash heredocs |
 | `rules/writing.md` | a pointer to the output style |
 | `.vale.ini` | vale's config. `@vvago/vale` is a devDependency |
 | `lib/prose.mjs` | the vale calls, and which `.vale.ini` governs a path |
@@ -35,24 +35,33 @@ Editor setup for VS Code, Zed and Devin is in `docs/vale-editor-setup.md`.
 |---|---|
 | `npm run lint:prose` | lints the content directories, named explicitly |
 | `node bin/lint-prose.mjs <path...>` | lints just those files or directories |
-| `npm run test:prose` | checks the Vue two-pass still reads template, script and style |
+| `npm run test:prose` | checks the Vue two-pass, the heredoc parser and the hook's three events |
 | `npm run build:british` | refetches VarCon and rewrites `british.yml` |
 
 `aix` 0.6.0 installs skills, MCP servers, rules and prompts. It does not install output
-styles or hooks, so those two are symlinked by hand:
+styles, hooks or vale, so those are set up by hand:
 
 ```bash
+npm install
 ln -sf "$PWD/output-styles/plain-english.md" ~/.claude/output-styles/plain-english.md
 ln -sf "$PWD/hooks/check-prose.mjs" ~/.claude/hooks/check-prose.mjs
+ln -sfn "$PWD" ~/.claude/vale
 ```
 
-Then add the hook to `~/.claude/settings.json`, on both events:
+`npm install` fetches the vale binary, at `node_modules/@vvago/vale/bin/vale`. The hook
+shells out to it, and so does `vale-ls`, which has no vale of its own. The last link is how
+a language server or another project finds this config, and that binary, when a workspace
+carries no `.vale.ini`. Without the install, `vale-ls` logs "Vale CLI not installed!" and
+reports nothing.
+
+Then add the hook to `~/.claude/settings.json`, on all three events:
 
 ```json
 {
    "hooks": {
       "Stop": [ { "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ],
-      "PostToolUse": [ { "matcher": "Write|Edit", "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
+      "PostToolUse": [ { "matcher": "Write|Edit", "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ],
+      "PreToolUse": [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
    }
 }
 ```
@@ -62,9 +71,17 @@ doc or a code comment written during a turn never appears in the chat. A `.vue` 
 the second pass there too. An `Edit` is checked on its replacement's own lines, so a file
 that already carries a banned term elsewhere does not block work that never touched it.
 
+`PreToolUse` checks the heredocs in a Bash command before it runs, and a denied command
+does not run. Merge request descriptions and commit messages travel that way, written to a
+`.md` or `.txt` file or piped into `git commit`, `glab` or `gh`, and neither of the other
+two events sees them. A heredoc written to a source file is read for its comments. One
+feeding an interpreter is code and is left alone.
+
 `Stop` checks the reply, and it cannot filter one. It fires after the text has streamed,
 so blocking only keeps the turn open and the correction arrives as a second message. No
-hook event runs before an assistant message reaches the user.
+hook event runs before an assistant message reaches the user. The reply comes from the
+payload's `last_assistant_message`. The hook blocks at most twice per prompt, counting in
+the session's scratchpad, so the corrected reply is checked too and the turn still ends.
 
 The rules come from the nearest `.vale.ini` above the file being checked, or above the
 working directory for a reply. A project that points at its own vale package is therefore
@@ -72,12 +89,13 @@ checked with its own rules and its own vocabulary, and this repo's config is the
 for a project carrying none. When that project's packages are not synced, vale cannot run
 and the hook says so rather than passing the text silently.
 
-Both block on `vague.yml`, `jargon.yml` and `british.yml`, and on `Vale.Repetition`, which
-catches a word typed twice in a row. `Stop` also blocks on em dashes and semicolons in prose.
-Neither blocks on `substitutions.yml`, because those words have a legitimate use when
-quoting a spec or someone else's copy, and a false positive should not stop a turn. vale
-parses Markdown and source comments, so a symbol named `mechanism` is not a hit, and a
-`colourScheme` in backticks is not one either.
+All three block on `vague.yml`, `jargon.yml` and `british.yml`, and on `Vale.Repetition`,
+which catches a word typed twice in a row. They also block on em dashes and semicolons in
+prose: the reply, a `.md` or `.mdx` file, and a prose heredoc, where a semicolon is not a
+statement terminator. None blocks on `substitutions.yml`, because those words have a
+legitimate use when quoting a spec or someone else's copy, and a false positive should not
+stop a turn. vale parses Markdown and source comments, so a symbol named `mechanism` is not
+a hit, and a `colourScheme` in backticks is not one either.
 
 ## Using these rules in another project
 

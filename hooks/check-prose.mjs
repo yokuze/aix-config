@@ -1,18 +1,30 @@
 #!/usr/bin/env node
-// Checks the agent's writing against the Plain English word lists, at the two points
-// where prose reaches the user.
+// Checks the agent's writing against the Plain English word lists, at the three points
+// where prose leaves the session.
 //
 //   Stop        the reply, after it has been sent
 //   PostToolUse the file just written or edited
+//   PreToolUse  a heredoc inside a Bash command, before the command runs
 //
 // Stop cannot filter anything. It fires once the reply has already streamed to the user,
 // and blocking it only stops the turn from ending, so the correction arrives as a second
-// message. PostToolUse is closer to a gate: the file is already written, but the fix
-// lands before the turn ends and before anyone reads it.
+// message. The reply comes from `last_assistant_message` in the payload. The transcript
+// file is the fallback, and in a long session it can lag the reply, which read as a pass.
 //
-// An Edit is checked on its replacement's own lines. The rest of the file may be someone
-// else's, and blocking on text this turn never touched would be wrong. A Write is checked
-// whole, because every line of it is this turn's.
+// A Stop block is bounded per prompt rather than by `stop_hook_active`. Claude Code sets
+// that flag on every Stop after a block, for the rest of the turn, and standing down on it
+// meant the corrected reply went unread. The count of blocks lives in the session's
+// scratchpad, keyed by prompt, and the hook stops after MAX_BLOCKS_PER_PROMPT.
+//
+// PostToolUse runs after the write, but the fix lands before the turn ends and before
+// anyone reads the file. An Edit is checked on its replacement's own lines. The rest of
+// the file may be someone else's, and blocking on text this turn never touched would be
+// wrong. A Write is checked whole, because every line of it is this turn's.
+//
+// PreToolUse is the one event that runs before the text lands. Merge request descriptions
+// and commit messages travel as heredocs in Bash commands, which the other two events
+// never see, and a denied command does not run. lib/prose.mjs decides which heredocs are
+// prose, which are comments, and which are code to leave alone.
 //
 // The vale calls live in lib/prose.mjs, which the repo linter uses too, so the word lists
 // and the Vue handling each have one implementation.
@@ -24,12 +36,56 @@
 // Register in ~/.claude/settings.json:
 //   "Stop":        [ { "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
 //   "PostToolUse": [ { "matcher": "Write|Edit", "hooks": [ { ...same... } ] } ]
+//   "PreToolUse":  [ { "matcher": "Bash", "hooks": [ { ...same... } ] } ]
 
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname } from 'node:path';
-import { configFor, isChecked, isSkipped, isUnsynced, lintFiles, lintText, valeBinary } from '../lib/prose.mjs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, extname, join } from 'node:path';
+import {
+   PUNCTUATED,
+   configFor,
+   heredocs,
+   isChecked,
+   isSkipped,
+   isUnsynced,
+   lintFiles,
+   lintText,
+   punctuationProblems,
+   valeBinary,
+} from '../lib/prose.mjs';
 
-const VALE_FAILED = 'Prose check skipped: vale could not run. Try `vale sync` in this project.';
+const VALE_FAILED = 'Prose check skipped: vale could not run. Try `vale sync` in this project.',
+      MAX_BLOCKS_PER_PROMPT = 2;
+
+function readPayload() {
+   try {
+      return JSON.parse(readFileSync(0, 'utf8'));
+   } catch {
+      return {};
+   }
+}
+
+const payload = readPayload(),
+      event = payload.hook_event_name ?? 'Stop';
+
+function write(output) {
+   process.stdout.write(JSON.stringify(output));
+}
+
+/** Stops the tool call, or the turn, with the reason. Each event has its own shape. */
+function deny(reason) {
+   if (event === 'PreToolUse') {
+      write({
+         hookSpecificOutput: {
+            hookEventName: 'PreToolUse',
+            permissionDecision: 'deny',
+            permissionDecisionReason: reason,
+         },
+      });
+      return;
+   }
+   write({ decision: 'block', reason });
+}
 
 /**
  * Reports and stands down when the config governing this path has no rules to apply.
@@ -44,20 +100,13 @@ function standDownIfUnsynced(startDir) {
    if (!isUnsynced(config)) {
       return;
    }
-   process.stdout.write(JSON.stringify({
+   write({
       systemMessage: `Prose check skipped: ${config} names vale packages that are not synced. Run \`vale sync\` there.`,
-   }));
+   });
    process.exit(0);
 }
 
-function readPayload() {
-   try {
-      return JSON.parse(readFileSync(0, 'utf8'));
-   } catch {
-      return {};
-   }
-}
-
+/** The reply, read from the transcript. For a Claude Code that sends no `last_assistant_message`. */
 function lastAssistantText(transcriptPath) {
    let lines;
 
@@ -92,24 +141,40 @@ function lastAssistantText(transcriptPath) {
    return '';
 }
 
-// vale skips fenced blocks and inline spans itself. This is only for the punctuation
-// counts, which are characters inside a sentence rather than words.
-function punctuationProblems(text) {
-   const prose = text.replace(/```[\s\S]*?```/g, ' ').replace(/`[^`\n]*`/g, ' '),
-         emDashes = (prose.match(/—/g) ?? []).length,
-         semicolons = (prose.match(/;/g) ?? []).length,
-         problems = [];
+/**
+ * How many times this hook has blocked the reply to the current prompt, and a way to
+ * record one more.
+ *
+ * `record` returns false when the block must not happen: the count could not be written
+ * and the turn is already a re-reply, which is the one case that could loop.
+ */
+function blockCounter() {
+   const dir = payload.scratchpad_dir ?? tmpdir(),
+         file = join(dir, `check-prose-blocks-${payload.prompt_id ?? payload.session_id ?? 'unknown'}`);
 
-   if (emDashes) {
-      problems.push(`${emDashes} em dash(es). Write two sentences.`);
+   let count = 0;
+
+   try {
+      count = Number(readFileSync(file, 'utf8')) || 0;
+   } catch {
+      // No file yet: nothing has been blocked for this prompt.
    }
-   if (semicolons) {
-      problems.push(`${semicolons} semicolon(s) in prose. Write two sentences.`);
-   }
-   return problems;
+
+   return {
+      count,
+      record() {
+         try {
+            mkdirSync(dir, { recursive: true });
+            writeFileSync(file, String(count + 1));
+            return true;
+         } catch {
+            return !payload.stop_hook_active;
+         }
+      },
+   };
 }
 
-function report({ alerts, problems, subject }) {
+function report({ alerts, problems, subject, closing, onBlock = () => { return true; } }) {
    const blocked = alerts.filter((a) => { return a.Severity === 'error'; }),
          reported = alerts.filter((a) => { return a.Severity === 'warning'; }),
          notes = reported.length
@@ -122,9 +187,9 @@ function report({ alerts, problems, subject }) {
       problems.unshift(...new Set(blocked.map((a) => { return a.Message; })));
    }
 
-   if (!problems.length) {
+   if (!problems.length || !onBlock()) {
       if (notes) {
-         process.stdout.write(JSON.stringify({ systemMessage: `Plain English notes.${notes}` }));
+         write({ systemMessage: `Plain English notes.${notes}` });
       }
       process.exit(0);
    }
@@ -144,25 +209,10 @@ function report({ alerts, problems, subject }) {
       ...problems.map((p) => { return `- ${p}`; }),
       '',
       ...labelTest,
-      'Send the corrected text only. Do not mention this correction or what you changed.',
+      closing,
    ].join('\n') + notes;
 
-   process.stdout.write(JSON.stringify({ decision: 'block', reason }));
-   process.exit(0);
-}
-
-const payload = readPayload(),
-      event = payload.hook_event_name ?? 'Stop';
-
-// A blocked reply re-enters this hook. Reporting once is the point, so stand down.
-if (event === 'Stop' && payload.stop_hook_active) {
-   process.exit(0);
-}
-
-if (!valeBinary()) {
-   process.stdout.write(JSON.stringify({
-      systemMessage: 'Prose check skipped: @vvago/vale is not installed. Run npm install in aix-config.',
-   }));
+   deny(reason);
    process.exit(0);
 }
 
@@ -201,20 +251,54 @@ function editedRanges(content, { old_string: removed, new_string: added, replace
    return ranges.length ? ranges : (removed === undefined ? [] : null);
 }
 
-if (event === 'PostToolUse') {
+function checkHeredocs() {
+   if (payload.tool_name !== 'Bash') {
+      process.exit(0);
+   }
+   const docs = heredocs(payload.tool_input?.command ?? '');
+
+   if (!docs.length) {
+      process.exit(0);
+   }
+   standDownIfUnsynced(process.cwd());
+
+   const alerts = [];
+
+   for (const doc of docs) {
+      const found = lintText(doc.body, doc.ext);
+
+      if (found === null) {
+         write({ systemMessage: VALE_FAILED });
+         process.exit(0);
+      }
+      alerts.push(...found);
+   }
+
+   report({
+      alerts,
+      problems: punctuationProblems(docs.filter((d) => { return d.prose; }).map((d) => { return d.body; }).join('\n')),
+      subject: 'The heredoc in this command',
+      closing: 'Rewrite the heredoc and run the command again. Do not mention this correction.',
+   });
+}
+
+function checkFile() {
    const file = payload.tool_input?.file_path ?? '';
 
    if (!file || isSkipped(file) || !isChecked(file) || !existsSync(file)) {
       process.exit(0);
    }
 
-   let ranges = [];
+   // For a Write the whole file is this turn's text. For an Edit only the replacement is.
+   let ranges = [],
+       written = readFileSync(file, 'utf8');
 
    if (payload.tool_name === 'Edit') {
-      ranges = editedRanges(readFileSync(file, 'utf8'), payload.tool_input ?? {});
+      ranges = editedRanges(written, payload.tool_input ?? {});
       if (ranges === null || !ranges.length) {
          process.exit(0);
       }
+      written = payload.tool_input.new_string;
    }
 
    standDownIfUnsynced(dirname(file));
@@ -223,7 +307,7 @@ if (event === 'PostToolUse') {
    const alerts = lintFiles([ file ]);
 
    if (alerts === null) {
-      process.stdout.write(JSON.stringify({ systemMessage: VALE_FAILED }));
+      write({ systemMessage: VALE_FAILED });
       process.exit(0);
    }
 
@@ -232,28 +316,52 @@ if (event === 'PostToolUse') {
 
    report({
       alerts: found,
-      problems: [],
+      problems: PUNCTUATED.has(extname(file)) ? punctuationProblems(written) : [],
       subject: `What you wrote to ${file}`,
+      closing: 'Fix the file. Do not mention this correction or what you changed.',
    });
 }
 
-standDownIfUnsynced(process.cwd());
+function checkReply() {
+   const rounds = blockCounter();
 
-const reply = lastAssistantText(payload.transcript_path ?? '');
+   if (payload.stop_hook_active && rounds.count >= MAX_BLOCKS_PER_PROMPT) {
+      process.exit(0);
+   }
 
-if (!reply.trim()) {
+   standDownIfUnsynced(process.cwd());
+
+   const reply = payload.last_assistant_message ?? lastAssistantText(payload.transcript_path ?? '');
+
+   if (!reply.trim()) {
+      process.exit(0);
+   }
+
+   const alerts = lintText(reply, '.md');
+
+   if (alerts === null) {
+      write({ systemMessage: VALE_FAILED });
+      process.exit(0);
+   }
+
+   report({
+      alerts,
+      problems: punctuationProblems(reply),
+      subject: 'Your reply',
+      closing: 'Send the corrected text only. Do not mention this correction or what you changed.',
+      onBlock: rounds.record,
+   });
+}
+
+if (!valeBinary()) {
+   write({ systemMessage: 'Prose check skipped: @vvago/vale is not installed. Run npm install in aix-config.' });
    process.exit(0);
 }
 
-const alerts = lintText(reply, '.md');
-
-if (alerts === null) {
-   process.stdout.write(JSON.stringify({ systemMessage: VALE_FAILED }));
-   process.exit(0);
+if (event === 'PreToolUse') {
+   checkHeredocs();
 }
-
-report({
-   alerts,
-   problems: punctuationProblems(reply),
-   subject: 'Your reply',
-});
+if (event === 'PostToolUse') {
+   checkFile();
+}
+checkReply();
