@@ -44,6 +44,6 @@ tokens:
   - innovative
   # Verbs that claim progress without naming it
   - foster
-  - underscore
+  - (?-i)underscore[sd]? (?:the|how|that|why|a|an|our|its|their)
   - unravel
   - travels
