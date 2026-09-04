@@ -44,6 +44,14 @@
             "fallow",
             "fallow-mcp"
          ]
+      },
+      "agent-device": {
+         "command": "npx",
+         "args": [
+            "-y",
+            "agent-device",
+            "mcp"
+         ]
       }
    },
    "rules": {
