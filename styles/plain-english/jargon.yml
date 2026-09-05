@@ -16,3 +16,4 @@ level: error
 ignorecase: true
 tokens:
   - prob(?:e|es|ed|ing)
+  - guard(?:ed|ing)
