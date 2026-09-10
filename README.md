@@ -71,11 +71,18 @@ doc or a code comment written during a turn never appears in the chat. A `.vue` 
 the second pass there too. An `Edit` is checked on its replacement's own lines, so a file
 that already has a banned term elsewhere does not block work that never touched it.
 
-`PreToolUse` checks the heredocs in a Bash command before it runs, and a denied command
-does not run. Merge request descriptions and commit messages travel that way, written to a
-`.md` or `.txt` file or piped into `git commit`, `glab` or `gh`, and neither of the other
-two events sees them. A heredoc written to a source file is read for its comments. One
-feeding an interpreter is code and is left alone.
+Every file is checked, whatever its extension. The `[*]` section in `.vale.ini` sets the
+rules, and the section under it names the data formats to skip: JSON, CSV, lockfiles and
+the rest, where a listed word inside a string value is not prose. That section is the one
+to edit, and a project's own `.vale.ini` replaces it. Binary formats never reach vale at
+all, from the `NOT_TEXT` set in `lib/prose.mjs`.
+
+`PreToolUse` checks the prose in a Bash command before it runs, and a denied command does
+not run. Merge request descriptions and commit messages travel that way, and neither of
+the other two events sees them. They arrive as a heredoc, written to a file or piped into
+`git commit`, `glab` or `gh`, or as a quoted argument to `-m`, `--description` or
+`--body`. A heredoc written to a source file is read for its comments. One feeding an
+interpreter is code and is left alone.
 
 `Stop` checks the reply, and it cannot filter one. It fires after the text has streamed,
 so blocking only keeps the turn open and the correction arrives as a second message. No

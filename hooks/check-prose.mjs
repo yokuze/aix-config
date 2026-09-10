@@ -4,7 +4,7 @@
 //
 //   Stop        the reply, after it has been sent
 //   PostToolUse the file just written or edited
-//   PreToolUse  a heredoc inside a Bash command, before the command runs
+//   PreToolUse  the prose inside a Bash command, before the command runs
 //
 // Stop cannot filter anything. It fires once the reply has already streamed to the user,
 // and blocking it only stops the turn from ending, so the correction arrives as a second
@@ -22,9 +22,10 @@
 // wrong. A Write is checked whole, because every line of it is this turn's.
 //
 // PreToolUse is the one event that runs before the text lands. Merge request descriptions
-// and commit messages travel as heredocs in Bash commands, which the other two events
-// never see, and a denied command does not run. lib/prose.mjs decides which heredocs are
-// prose, which are comments, and which are code to leave alone.
+// and commit messages travel inside Bash commands, which the other two events never see,
+// and a denied command does not run. They arrive as a heredoc or as a quoted argument to
+// `-m`, `--description` or `--body`. lib/prose.mjs reads both, and decides which bodies
+// are prose, which are comments, and which are code to leave alone.
 //
 // The vale calls live in lib/prose.mjs, which the repo linter uses too, so the word lists
 // and the Vue handling each have one implementation.
@@ -44,12 +45,12 @@ import { dirname, extname, join } from 'node:path';
 import {
    PUNCTUATED,
    configFor,
-   heredocs,
    isChecked,
    isSkipped,
    isUnsynced,
    lintFiles,
    lintText,
+   proseIn,
    punctuationProblems,
    valeBinary,
 } from '../lib/prose.mjs';
@@ -251,11 +252,11 @@ function editedRanges(content, { old_string: removed, new_string: added, replace
    return ranges.length ? ranges : (removed === undefined ? [] : null);
 }
 
-function checkHeredocs() {
+function checkCommand() {
    if (payload.tool_name !== 'Bash') {
       process.exit(0);
    }
-   const docs = heredocs(payload.tool_input?.command ?? '');
+   const docs = proseIn(payload.tool_input?.command ?? '');
 
    if (!docs.length) {
       process.exit(0);
@@ -277,8 +278,8 @@ function checkHeredocs() {
    report({
       alerts,
       problems: punctuationProblems(docs.filter((d) => { return d.prose; }).map((d) => { return d.body; }).join('\n')),
-      subject: 'The heredoc in this command',
-      closing: 'Rewrite the heredoc and run the command again. Do not mention this correction.',
+      subject: 'The prose in this command',
+      closing: 'Rewrite it and run the command again. Do not mention this correction.',
    });
 }
 
@@ -359,7 +360,7 @@ if (!valeBinary()) {
 }
 
 if (event === 'PreToolUse') {
-   checkHeredocs();
+   checkCommand();
 }
 if (event === 'PostToolUse') {
    checkFile();
