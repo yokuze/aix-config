@@ -31,7 +31,7 @@ Candy Crush pairs matches with motion and sound that scale with the cascade. Mar
 - Trigger feedback from confirmed game state, not optimistic UI alone.
 - Add separate toggles for haptics, music, and effects.
 - Cap intensity and frequency during long cascades.
-- Provide text or shape cues for events otherwise carried by color or sound.
+- Provide text or shape cues for events otherwise signaled by color or sound.
 
 ## Risks and measures
 

@@ -19,7 +19,7 @@ related_patterns: [levels, periodic-events, onboarding, player-agency]
 
 ## Summary
 
-Storytelling gives play a reason and a point of view. On mobile, it works best when narrative is carried by goals, spaces, animation, and brief exchanges rather than long text placed between play sessions.
+Storytelling gives play a reason and a point of view. On mobile, it works best when goals, spaces, animation, and brief exchanges tell the story rather than long text placed between play sessions.
 
 ## Problem
 
@@ -60,7 +60,7 @@ Measure scene completion and skip rates, recap use, chapter return rate, objecti
 
 ## Applying this pattern
 
-Let cookies, crumbs, board transformations, and character reactions carry the premise. A chapter intro should fit one phone screen and lead directly into a board. Completing a world should visibly repair or transform its scene.
+Let cookies, crumbs, board transformations, and character reactions show the premise. A chapter intro should fit one phone screen and lead directly into a board. Completing a world should visibly repair or transform its scene.
 
 ## References
 

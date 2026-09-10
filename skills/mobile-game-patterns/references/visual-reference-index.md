@@ -51,7 +51,7 @@ What to study: a season bundles a release window, a new card, and new challenges
 
 ![Monument Valley minimal scene reference](screenshots/monument-valley-minimal-scene.webp)
 
-What to study: nearly the whole frame is the puzzle. There is no HUD text, no score, no health - the geometry and the path are the interface. This is the far end of the "board first" hierarchy: when the challenge is clear, the UI can almost disappear. Respect safe areas and let empty space carry meaning.
+What to study: nearly the whole frame is the puzzle. There is no HUD text, no score, no health - the geometry and the path are the interface. This is the far end of the "board first" hierarchy: when the challenge is clear, the UI can almost disappear. Respect safe areas and let empty space be part of the design.
 
 ## Level objective framing (Royal Match)
 

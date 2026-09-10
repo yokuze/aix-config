@@ -176,7 +176,7 @@ but then rejects `Tauri`, `oxlint`, `subagent`, `replayable` and 238 other words
 not misspelled. Every step that cuts the false positives accepts more British spellings,
 because one dial moves both: `en_US-large` gives back 25 real words and 89 British ones.
 
-`british.yml` sits outside that trade. It carries 2286 spellings, hits none of this
+`british.yml` sits outside that trade. It lists 2286 spellings, hits none of this
 repo's words, and names the American spelling instead of asking "did you mean". What it
 does not do is catch ordinary typos, which is a different job and no rule here does it.
 

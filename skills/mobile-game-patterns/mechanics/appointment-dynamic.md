@@ -80,7 +80,7 @@ Pokémon GO posts a new Weekly Challenge every Tuesday at 00:00 UTC. A progress 
 - Placing the only fair source of a competitive resource behind an appointment makes the game less fair.
 - A timer whose sole purpose is to sell a skip exploits impatience.
 
-The original UI Patterns description explicitly recommends punishing no-shows. That advice should not be carried forward. Modern mobile design should favor predictable availability and grace.
+The original UI Patterns description explicitly recommends punishing no-shows. That advice should not be repeated. Modern mobile design should favor predictable availability and grace.
 
 ## Accessibility and ethics
 

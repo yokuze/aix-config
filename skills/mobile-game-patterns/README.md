@@ -31,7 +31,7 @@ rg -l '^ethical_risk: (medium|high)$' docs/mobile-game-patterns
 
 ## Front matter contract
 
-Every pattern has `title`, `slug`, `category`, `platforms`, `tags`, `updated`, `sources`, and `related_patterns`. Newer patterns also carry `source_type`, `maturity`, and `ethical_risk`.
+Every pattern has `title`, `slug`, `category`, `platforms`, `tags`, `updated`, `sources`, and `related_patterns`. Newer patterns also have `source_type`, `maturity`, and `ethical_risk`.
 
 The folders are deliberately plain:
 

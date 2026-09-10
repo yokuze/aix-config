@@ -25,7 +25,7 @@ Praise is immediate positive feedback for a specific player action. It can be a 
 
 Players need to learn which actions are effective, especially when a game has gestures, timing, spatial combinations, or rules that are not obvious from the outcome alone. A score increase may be too abstract. Silence after a difficult move can make the game feel unresponsive, while generic enthusiasm after every tap quickly becomes noise.
 
-Praise makes correct or skillful behavior legible and can carry momentum through a short mobile session.
+Praise makes correct or skillful behavior legible and can keep momentum through a short mobile session.
 
 ## How it works
 

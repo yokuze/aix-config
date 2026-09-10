@@ -12,7 +12,7 @@ npx @a1st/aix install https://github.com/yokuze/aix-config/blob/main/ai.json
 
 One test decides whether a sentence is worth sending. If it refers to a thing, name that
 thing. If it asserts a behavior, give the value or say where the behavior is defined. A
-sentence with neither is a label, and a label reads as an explanation while carrying none.
+sentence with neither is a label, and a label reads as an explanation and gives none.
 
 | File | Holds |
 |---|---|
@@ -51,7 +51,7 @@ ln -sfn "$PWD" ~/.claude/vale
 `npm install` fetches the vale binary, at `node_modules/@vvago/vale/bin/vale`. The hook
 shells out to it, and so does `vale-ls`, which has no vale of its own. The last link is how
 a language server or another project finds this config, and that binary, when a workspace
-carries no `.vale.ini`. Without the install, `vale-ls` logs "Vale CLI not installed!" and
+has no `.vale.ini`. Without the install, `vale-ls` logs "Vale CLI not installed!" and
 reports nothing.
 
 Then add the hook to `~/.claude/settings.json`, on all three events:
@@ -69,7 +69,7 @@ Then add the hook to `~/.claude/settings.json`, on all three events:
 `PostToolUse` checks the file just written, which is the half a reply check cannot see: a
 doc or a code comment written during a turn never appears in the chat. A `.vue` file gets
 the second pass there too. An `Edit` is checked on its replacement's own lines, so a file
-that already carries a banned term elsewhere does not block work that never touched it.
+that already has a banned term elsewhere does not block work that never touched it.
 
 `PreToolUse` checks the heredocs in a Bash command before it runs, and a denied command
 does not run. Merge request descriptions and commit messages travel that way, written to a
@@ -86,7 +86,7 @@ the session's scratchpad, so the corrected reply is checked too and the turn sti
 The rules come from the nearest `.vale.ini` above the file being checked, or above the
 working directory for a reply. A project that points at its own vale package is therefore
 checked with its own rules and its own vocabulary, and this repo's config is the fallback
-for a project carrying none. When that project's packages are not synced, vale cannot run
+for a project with none. When that project's packages are not synced, vale cannot run
 and the hook says so rather than passing the text silently.
 
 All three block on `vague.yml`, `jargon.yml` and `british.yml`, and on `Vale.Repetition`,

@@ -7,4 +7,4 @@ Refer to the docs in this folder any time you are designing new features, brains
 
 Each pattern is a standalone document with searchable YAML front matter.
 
-Every pattern has `title`, `slug`, `category`, `platforms`, `tags`, `updated`, `sources`, and `related_patterns`. Some also carry `source_type`, `maturity`, and `ethical_risk`.
+Every pattern has `title`, `slug`, `category`, `platforms`, `tags`, `updated`, `sources`, and `related_patterns`. Some also have `source_type`, `maturity`, and `ethical_risk`.
