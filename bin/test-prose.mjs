@@ -4,6 +4,8 @@
 //   * a Vue component is read in full: the template's prose, a `///` comment in the script
 //     block, and a `//` comment in the SCSS style block. vale reads one format per file, so
 //     covering all three is the behavior lib/prose.mjs adds
+//   * a test file's names and assertion messages are read, at the line and column of the
+//     call they sit in, and the strings around them are not
 //   * the command parser reads heredocs and `-m`-style message arguments, and tells prose
 //     and comments from code
 //   * every extension is checked except the data formats .vale.ini names and the binary
@@ -34,6 +36,25 @@ const matched = Object.values(alerts).flat().map((a) => { return a.Match; }).sor
 
 assert.deepEqual(matched, [ 'comprehensive', 'robust', 'seamless' ]);
 process.stdout.write(`Vue two-pass reads template, script and style comments: ${matched.join(', ')}\n`);
+
+// A test file's names and assertion messages are strings, which vale never reads. The
+// source-string pass masks the rest of the file and lints what is left, so the reported
+// line and column still point at the call. The fixture also holds a file path, a code span
+// and a `new Error` message, none of which this pass reads.
+const SOURCE_FIXTURE = 'test-fixtures/sample.test.ts',
+      sourceAlerts = lintFiles([ SOURCE_FIXTURE ]);
+
+if (sourceAlerts === null) {
+   process.stderr.write('vale failed.\n');
+   process.exit(1);
+}
+
+const located = Object.values(sourceAlerts).flat()
+   .map((a) => { return `${a.Line}:${a.Span[0]} ${a.Match}`; })
+   .sort();
+
+assert.deepEqual(located, [ '5:15 seamless', '6:18 robust', '9:35 comprehensive' ]);
+process.stdout.write(`Source strings read test names and assertion messages: ${located.join(', ')}\n`);
 
 // Four heredocs: a description written to a .md file, a commit message piped to git, a
 // Python script whose output is redirected to a .json file, and a TypeScript file. The
