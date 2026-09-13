@@ -4,10 +4,12 @@
 //   * a Vue component is read in full: the template's prose, a `///` comment in the script
 //     block, and a `//` comment in the SCSS style block. vale reads one format per file, so
 //     covering all three is the behavior lib/prose.mjs adds
-//   * a test file's names and assertion messages are read, at the line and column of the
-//     call they sit in, and the strings around them are not
-//   * the command parser reads heredocs and `-m`-style message arguments, and tells prose
-//     and comments from code
+//   * a source file's strings are read where they are prose: a test name, an assertion
+//     message, a thrown error, a command's help text, a log line, and every string in a
+//     file that opts in. Each is reported at the line and column of the call it sits in
+//   * the command parser reads heredocs, `-m`-style message arguments, a forge API's
+//     `-f body=` field and the contents of a `-F` message file, and tells prose and
+//     comments from code
 //   * every extension is checked except the data formats .vale.ini names and the binary
 //     ones lib/prose.mjs never opens
 //   * the hook blocks on each of its three events, and a Stop block is bounded per prompt
@@ -37,24 +39,45 @@ const matched = Object.values(alerts).flat().map((a) => { return a.Match; }).sor
 assert.deepEqual(matched, [ 'comprehensive', 'robust', 'seamless' ]);
 process.stdout.write(`Vue two-pass reads template, script and style comments: ${matched.join(', ')}\n`);
 
-// A test file's names and assertion messages are strings, which vale never reads. The
-// source-string pass masks the rest of the file and lints what is left, so the reported
-// line and column still point at the call. The fixture also holds a file path, a code span
-// and a `new Error` message, none of which this pass reads.
-const SOURCE_FIXTURE = 'test-fixtures/sample.test.ts',
-      sourceAlerts = lintFiles([ SOURCE_FIXTURE ]);
+/** Every alert in one file as `line:column term`, in the order they appear. */
+function locate(file) {
+   const found = lintFiles([ file ]);
 
-if (sourceAlerts === null) {
-   process.stderr.write('vale failed.\n');
-   process.exit(1);
+   if (found === null) {
+      process.stderr.write('vale failed.\n');
+      process.exit(1);
+   }
+
+   return Object.values(found).flat()
+      .map((a) => { return `${a.Line}:${a.Span[0]} ${a.Match}`; })
+      .sort((a, b) => { return Number.parseInt(a, 10) - Number.parseInt(b, 10); });
 }
 
-const located = Object.values(sourceAlerts).flat()
-   .map((a) => { return `${a.Line}:${a.Span[0]} ${a.Match}`; })
-   .sort();
+// A source file's strings are what vale never reads. The pass masks the rest of the file
+// and lints what is left, so the reported line and column still point at the call. Seven
+// shapes are read here: a describe name, a test name, an assertion message, a
+// `.description()`, an `.option()` help string, a log line and a thrown error. The fixture
+// also holds a file path, a code span and a regex, none of which this pass reads.
+const located = locate('test-fixtures/sample.test.ts');
 
-assert.deepEqual(located, [ '5:15 seamless', '6:18 robust', '9:35 comprehensive' ]);
-process.stdout.write(`Source strings read test names and assertion messages: ${located.join(', ')}\n`);
+assert.deepEqual(located, [
+   '5:15 seamless',
+   '6:18 robust',
+   '9:35 comprehensive',
+   '15:25 cutting-edge',
+   '16:43 pivotal',
+   '20:21 vital',
+   '21:26 crucial',
+]);
+process.stdout.write(`Source strings read seven call shapes: ${located.length} terms\n`);
+
+// A prompt body assigned to a name has no call to anchor on, so the file opts in with a
+// `prose-lint: strings` comment. The assignment, the `+` continuation and the array element
+// are all read.
+const opted = locate('test-fixtures/sample-prompt.ts');
+
+assert.deepEqual(opted, [ '7:40 seamless', '8:23 robust', '12:13 comprehensive' ]);
+process.stdout.write(`An opted-in file has every string read: ${opted.join(', ')}\n`);
 
 // Four heredocs: a description written to a .md file, a commit message piped to git, a
 // Python script whose output is redirected to a .json file, and a TypeScript file. The
@@ -104,6 +127,31 @@ assert.deepEqual(
    [ '1 em dash(es). Write two sentences.', '1 semicolon(s) in prose. Write two sentences.' ],
 );
 process.stdout.write('Command parser keeps prose and comments, skips code\n');
+
+// A review comment posted through a forge API carries its text in a field rather than a
+// message flag, and a commit message given as a path is only on disk. Both reach a person.
+assert.deepEqual(
+   proseIn("gh api repos/o/r/issues/1/comments -f body='A seamless comment'").map((d) => { return d.body; }),
+   [ 'A seamless comment' ],
+);
+assert.deepEqual(
+   proseIn('glab api --method POST projects/1/notes --field body="A robust note"').map((d) => { return d.body; }),
+   [ 'A robust note' ],
+);
+
+const messagePath = join(mkdtempSync(join(tmpdir(), 'prose-message-')), 'msg.txt');
+
+writeFileSync(messagePath, 'fix: a seamless change\n');
+assert.deepEqual(
+   proseIn(`git commit -F ${messagePath}`).map((d) => { return [ d.ext, d.prose, d.body.trim() ]; }),
+   [ [ '.md', true, 'fix: a seamless change' ] ],
+);
+// A path that does not exist, one holding a shell variable, and a `-F` that names a field
+// rather than a file are all left alone. So is a `-F` on an unrelated command.
+assert.deepEqual(proseIn('git commit -F /nope/missing.txt'), []);
+assert.deepEqual(proseIn('git commit -F "$MSG_PATH"'), []);
+assert.deepEqual(proseIn('grep -F pattern notes.txt'), []);
+process.stdout.write('Command parser reads a forge API field and a message file\n');
 
 // The default is that everything counts as prose. A commit message written to a `.txt`
 // file reached a repository unread while this was an allowlist of extensions.

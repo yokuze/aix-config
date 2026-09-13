@@ -1,4 +1,4 @@
-// A fixture for the source-string pass. Each reported term sits in a different call shape,
+// A fixture for the source-string pass. Every reported term sits in a different call shape,
 // and the lines that must stay unread hold a term too.
 import { describe, expect, it } from 'vitest';
 
@@ -8,13 +8,17 @@ describe('the seamless import flow', () => {
 
       expect(readTarget(path), 'a comprehensive message').toEqual({ ok: true });
    });
-
-   it.each([ 1, 2 ])('retries %i times', () => {});
 });
+
+program
+   .command('sync')
+   .description('Pull a cutting-edge snapshot of the remote')
+   .option('--force <mode>', 'Overwrite a pivotal local change');
 
 function readTarget(path: string): { ok: boolean } {
    if (!/robust/.test(path)) {
-      throw new Error('a pivotal failure');
+      log.warn('the vital file is missing');
+      throw new Error('a crucial failure');
    }
 
    return { ok: true };
