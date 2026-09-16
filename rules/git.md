@@ -41,7 +41,7 @@ These are the ONLY two kinds fo scoped commits allowed
 * `sub(feat):` — Sub-commit of a larger feature
 * `sub(fix):` — Sub-commit of a larger fix
 
-## Subject Line Requirements
+## Subject Line
 
 * **72 characters maximum** for the full header (type + scope + subject + issue)
 * Use imperative mood ("add feature" not "added feature" or "adds feature")
@@ -51,7 +51,7 @@ These are the ONLY two kinds fo scoped commits allowed
 * If multiple issues, include additional numbers in the body/footer instead
 * Describe **what** the commit does, not what was wrong
 
-## Body Requirements
+## Body
 
 * Separate from subject with a blank line
 * **90 characters maximum** per line

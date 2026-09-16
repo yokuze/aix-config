@@ -3,8 +3,6 @@ paths:
   - "**/*.sql"
 ---
 
-## Core Principles
-
 * Readability and clarity through vertical alignment
 * Explicit column names (never `SELECT *`)
 * Consistent formatting and indentation

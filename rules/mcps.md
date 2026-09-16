@@ -1,5 +1,3 @@
-* Always use Context7 when you need setup or configuration steps, or library/API
-  documentation. Use the Context7 MCP tools to resolve library ID and get library docs
 * If you make UI changes, use MCP tools to test them in a real environment
    * Use the Tauri MCP when working within a Tauri app
    * Use Playwright or browser-use for other projects

@@ -7,8 +7,6 @@ keep-coding-instructions: true
 Applies to everything you write: chat replies, commit messages, merge request
 descriptions, code comments, documentation, and tickets.
 
-## The test
-
 Use specific, clear, common language and technical terms. Avoid vague,
 metaphoric language:
 
@@ -16,8 +14,8 @@ metaphoric language:
 |---|---|
 | the directive lands on the wrapper | `renderComponentRoot` copies the vnode's `dirs` onto its root element |
 | a single-element root at every hop | `TooltipContent` renders `Presence`, which renders `TooltipContentImpl` |
-| `inset: auto` is `load-bearing` | without `inset: auto` the box renders at (652, 323) instead of (200, 100) |
-| it avoids collisions against the viewport | `data-side` stays `bottom` and the box extends past the container's edge |
+| `inset: auto` is load-bearing | without `inset: auto` the box renders at (652, 323) instead of (200, 100) |
+| it avoids collisions against the viewport | it sets `data-side` to `bottom` and the box extends past the container's edge |
 | that branch survives the top layer | `getClippingRect` tests `boundary === 'clippingAncestors'` first, so an explicit array never reaches the `isTopLayer` check |
 
 ## Get the value before you write
@@ -33,17 +31,15 @@ coordinates are incorrect." is specific.
 ## Mechanics
 
 * No em dashes. No semicolons. Write two sentences.
-* Active voice. Name the actor.
+* Active voice
 * One topic per paragraph. Short sentences.
-* One word, one meaning. Keep each term for the whole document.
-* American spelling. Follow the principles behind ASD-STE100 Simplified Technical English.
-* No metaphor.
-* Cut words, never meaning. Keep the nuance the reader needs.
+* Use consistent terms. Keep each term for the whole document.
+* American spelling. 
+* Follow the principles behind ASD-STE100 Simplified Technical English.
 * Avoid the future tense in requirements unless the surrounding document uses it.
-* Use realistic code examples.
-* Give the number, not "significantly faster".
+* Use realistic code examples over prose whenever possible
 * Do not state significance. No "this marks a turning point" or "highlights a broader
-  trend". Facts speak on their own.
+  trend". Just state facts.
 * Attribute specifically or not at all. Cite the source or drop the claim.
 * No emoji unless asked.
 * Sentence case for headings.
@@ -60,23 +56,18 @@ Cut all of these:
 * alternatives you considered and rejected, with their evidence
 * narration of each test. Say what the tests cover in one line, or say nothing
 * anything the commit message or the diff already says
+* open questions
 
 In a work summary, use the plain past-tense verb for what happened: merged, added, fixed,
 updated, refactored, reviewed, moved.
 
-## Editing someone else's text
-
-* Keep their words and voice. Fix grammar and repetition only.
-* Write the result as if writing it for the first time. Do not narrate the change. Write
-  "The background color is `#333`", not "The background color is now `#333`".
-
-## Word lists
+* When editing or re-writing, write as if you are writing about the subject for the first
+  time. Do not narrate the change. Write "The background color is `#333`", not "The
+  background color is now `#333`".
 
 The terms to avoid live in `styles/plain-english/`, in Vale's rule format:
 
-* `vague.yml` blocks metaphors and intensifiers that stand in for a fact.
-* `jargon.yml` blocks words that name the move rather than the thing, and asks for the
-  thing instead of naming a single replacement.
-* `substitutions.yml` reports words with a plain replacement.
-* `british.yml` blocks British spellings and names the American one. Generated from
-  VarCon by `npm run build:british`, so it is not hand-edited.
+* `vague.yml` blocks metaphors and intensifiers that stand in for a fact
+* `jargon.yml`
+* `substitutions.yml`
+* `british.yml` blocks British spellings

@@ -6,8 +6,6 @@ paths:
 Assume Vue 3.5+ with the Composition API and Single-File Components (SFCs) unless
 `package.json` indicates otherwise.
 
-## ABSOLUTELY DO NOT
-
 * ABSOLUTELY DO NOT use with unsanitized inputs `v-html` in Vue templates
 
 ## SFC Structure

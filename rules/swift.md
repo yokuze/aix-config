@@ -7,7 +7,7 @@ paths:
 These standards supplement the Silvermine coding standards. Where Swift community
 conventions conflict with the general standard, the Swift-specific rule takes precedence.
 
-## Core Principles
+## Principles
 
 * Prefer value types (structs) over reference types (classes) unless you need identity
   semantics or inheritance

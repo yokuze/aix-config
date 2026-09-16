@@ -81,4 +81,3 @@
 
 * Pay attention to the current version of the component, and use a similar pattern as
   set by existing elements
-* Consider accessibility / a11y
