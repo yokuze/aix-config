@@ -128,7 +128,7 @@ it usable as a CI check.
 
 To have Devin see the rules rather than only the failures, point its instructions at
 `output-styles/plain-english.md`. The failure message gives the term and the check, and
-the style file holds the reasoning behind them.
+the style file states the reasoning behind them.
 
 ## Adding or changing a term
 
@@ -150,6 +150,10 @@ A term that has several plain replacements, where the right one depends on what 
 writer meant, goes in `styles/plain-english/jargon.yml` instead. It blocks and asks the
 writer to name the actual thing, rather than reporting a single fixed swap.
 
+`styles/plain-english/ambiguous.yml` asks the same question without blocking. Use it when
+the plain version is almost always better and the exception is still a real sentence, so
+the writer decides per use.
+
 `styles/plain-english/british.yml` is generated. `bin/build-british.mjs` derives its 2286
 British spellings from VarCon, keeping the words at SCOWL level 50 and below and dropping
 any spelling that American dictionaries prefer. Add a word to `substitutions.yml` rather
@@ -170,7 +174,7 @@ this repo's 82 files and against all 2286 words in `british.yml`:
 | `en_US` plus 16k cspell tech terms and camelCase filters | 2281 | 105 words |
 | SCOWL `en_US-large`, same additions | 2192 | 80 words |
 
-vale's own dictionary holds the British forms, so it passes `colour`, `behaviour`,
+vale's own dictionary lists the British forms, so it passes `colour`, `behaviour`,
 `organise` and `centre`. A replacement dictionary rejects almost every British spelling,
 but then rejects `Tauri`, `oxlint`, `subagent`, `replayable` and 238 other words that are
 not misspelled. Every step that cuts the false positives accepts more British spellings,

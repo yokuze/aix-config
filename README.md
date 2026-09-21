@@ -14,11 +14,12 @@ One test decides whether a sentence is worth sending. If it refers to a thing, n
 thing. If it asserts a behavior, give the value or say where the behavior is defined. A
 sentence with neither is a label, and a label reads as an explanation and gives none.
 
-| File | Holds |
+| File | Contents |
 |---|---|
 | `output-styles/plain-english.md` | the rules, and the only copy of them |
 | `styles/plain-english/vague.yml` | terms with no plain use. Blocked |
 | `styles/plain-english/jargon.yml` | terms with several plain uses. Blocked |
+| `styles/plain-english/ambiguous.yml` | terms with several plain uses. Reported |
 | `styles/plain-english/substitutions.yml` | terms with a plain replacement. Reported |
 | `styles/plain-english/british.yml` | British spellings. Blocked. Generated |
 | `hooks/check-prose.mjs` | agent hook: checks replies, written files and Bash heredocs |
@@ -99,16 +100,10 @@ is out of date, the hook says so rather than passing the text silently.
 All three block on `vague.yml`, `jargon.yml` and `british.yml`, and on `Vale.Repetition`,
 which catches a word typed twice in a row. They also block on em dashes and semicolons in
 prose: the reply, a `.md` or `.mdx` file, and a prose heredoc, where a semicolon is not a
-statement terminator. None blocks on `substitutions.yml`, because those words have a
-legitimate use when quoting a spec or someone else's copy, and a false positive should not
-stop a turn. vale parses Markdown and source comments, so a symbol named `mechanism` is not
+statement terminator. None blocks on `ambiguous.yml` or `substitutions.yml`, because those words
+have a legitimate use when quoting a spec or someone else's copy, and a false positive
+should not stop a turn. vale parses Markdown and source comments, so a symbol named `mechanism` is not
 a hit, and a `colourScheme` in backticks is not one either.
-
-A rule written in response to a term that reached a commit puts that text into
-`test-fixtures/escaped.ts`, and `bin/test-prose.mjs` asserts the check and severity it
-has to produce. Verifying against a fresh one-line example instead is what let the first
-entry there survive its own fix: the pattern matched the example, and a literal space in
-it could not cross the line break in the real file.
 
 ## Using these rules in another project
 
@@ -171,7 +166,7 @@ What reaches Claude Code, and when:
 | `hooks/check-prose.mjs` | next tool call. Symlinked |
 | `rules/*.md` | **only after installing.** See below |
 
-`~/.claude/rules/` holds copies rather than symlinks, so a rule edited here does not reach
+`~/.claude/rules/` contains copies rather than symlinks, so a rule edited here does not reach
 a session until it is installed:
 
 ```bash

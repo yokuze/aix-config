@@ -10,6 +10,8 @@ descriptions, code comments, documentation, and tickets.
 Use specific, clear, common language and technical terms. Avoid vague,
 metaphoric language:
 
+<!-- vale plain-english.vague = NO -->
+
 | Vague | Replacement |
 |---|---|
 | the directive lands on the wrapper | `renderComponentRoot` copies the vnode's `dirs` onto its root element |
@@ -17,6 +19,8 @@ metaphoric language:
 | `inset: auto` is load-bearing | without `inset: auto` the box renders at (652, 323) instead of (200, 100) |
 | it avoids collisions against the viewport | it sets `data-side` to `bottom` and the box extends past the container's edge |
 | that branch survives the top layer | `getClippingRect` tests `boundary === 'clippingAncestors'` first, so an explicit array never reaches the `isTopLayer` check |
+
+<!-- vale plain-english.vague = YES -->
 
 ## Get the value before you write
 
@@ -69,5 +73,6 @@ The terms to avoid live in `styles/plain-english/`, in Vale's rule format:
 
 * `vague.yml` blocks metaphors and intensifiers that stand in for a fact
 * `jargon.yml`
+* `ambiguous.yml`
 * `substitutions.yml`
 * `british.yml` blocks British spellings

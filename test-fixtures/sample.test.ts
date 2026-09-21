@@ -1,5 +1,5 @@
 // A fixture for the source-string pass. Every reported term sits in a different call shape,
-// and the lines that must stay unread hold a term too.
+// and the lines that must stay unread contain a term too.
 import { describe, expect, it } from 'vitest';
 
 describe('the seamless import flow', () => {

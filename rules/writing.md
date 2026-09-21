@@ -5,6 +5,8 @@ description: "Write clear, specific prose that sounds human. Avoid patterns comm
 If you do not already have the Plain English output style in your context, read this file:
 @./styles/plain-english.md
 
-Avoid metaphors, figures of speech, and vague words like "carries" or "names". 
+<!-- vale plain-english.vague = NO -->
+Avoid metaphors, figures of speech, and vague words like "carries", "holds" or "names".
+<!-- vale plain-english.vague = YES -->
 
 Use specific, common technical terms.

@@ -25,7 +25,7 @@ Let decorative backgrounds bleed to every edge. Keep interactive controls and es
 
 ## Examples
 
-Portrait puzzle games commonly extend art behind the status region while keeping currency, lives, and settings below it. Pokémon GO lets the map fill the display but holds its persistent controls away from the extreme edges.
+Portrait puzzle games commonly extend art behind the status region while keeping currency, lives, and settings below it. Pokémon GO lets the map fill the display but insets its persistent controls from the extreme edges.
 
 ## Implementation guidance
 
