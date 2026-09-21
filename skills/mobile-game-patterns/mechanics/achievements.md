@@ -39,7 +39,7 @@ The game defines a condition, exposes enough information for the player to under
 - A permanent place in the profile, collection, or history.
 - Optional display choices rather than automatic public comparison.
 
-Difficulty should rise with player skill. A first achievement can teach a basic move; later ones can recognize efficiency, unusual strategies, or sustained mastery. Hidden achievements are best reserved for genuine discoveries, not requirements the player could not reasonably infer.
+Difficulty should rise with player skill. A first achievement can teach a basic move; later ones can recognize efficiency, unusual strategies, or sustained mastery. Hidden achievements are best reserved for what a player finds on their own, not requirements they could not reasonably infer.
 
 ## Mobile-game application
 

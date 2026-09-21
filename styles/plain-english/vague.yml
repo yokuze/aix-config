@@ -46,6 +46,7 @@ tokens:
   - performant
   - innovative
   - significant(?:ly)?
+  - genuine(?:ly)?
   - powerful(?:ly)?
   - elegant(?:ly)?
   - first.class
@@ -54,5 +55,5 @@ tokens:
   - foster
   - (?-i)underscore[sd]? (?:the|how|that|why|a|an|our|its|their)
   - unravel
-  - travels
+  - travel(?:s|ed|led|ing|ling)?
   - carr(?:y|ies|ied|ying)

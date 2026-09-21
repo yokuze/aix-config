@@ -78,8 +78,8 @@ to edit, and a project's own `.vale.ini` replaces it. Binary formats never reach
 all, from the `NOT_TEXT` set in `lib/prose.mjs`.
 
 `PreToolUse` checks the prose in a Bash command before it runs, and a denied command does
-not run. Merge request descriptions and commit messages travel that way, and neither of
-the other two events sees them. They arrive as a heredoc, written to a file or piped into
+not run. Merge request descriptions and commit messages reach a forge that way, and neither
+of the other two events sees them. They arrive as a heredoc, written to a file or piped into
 `git commit`, `glab` or `gh`, or as a quoted argument to `-m`, `--description` or
 `--body`. A heredoc written to a source file is read for its comments. One feeding an
 interpreter is code and is left alone.

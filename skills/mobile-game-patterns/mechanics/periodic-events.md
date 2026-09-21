@@ -52,7 +52,7 @@ Too many simultaneous timers create calendar fatigue. Exclusive power, narrow wi
 
 ## Accessibility and ethics
 
-Rotate start windows or make the active period generous across regions. Avoid objectives that require unsafe travel or constant attention. Offer reduced-motion event presentation and accessible timer labels. Repeat important story or accessibility rewards.
+Rotate start windows or make the active period generous across regions. Avoid objectives that require going somewhere unsafe or constant attention. Offer reduced-motion event presentation and accessible timer labels. Repeat important story or accessibility rewards.
 
 ## Metrics
 

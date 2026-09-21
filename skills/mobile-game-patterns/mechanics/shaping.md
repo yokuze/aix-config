@@ -55,7 +55,7 @@ Track first-attempt success after prompts disappear, error type, hint dependence
 
 ## Applying this pattern
 
-Start with a board where the only meaningful action forms one word or connection. Next ask the player to choose between two valid moves, then introduce the first genuinely tactical tradeoff. Reward understanding with immediate board response, not a shower of unrelated currency.
+Start with a board where the only meaningful action forms one word or connection. Next ask the player to choose between two valid moves, then introduce the first tactical tradeoff. Reward understanding with immediate board response, not a shower of unrelated currency.
 
 ## References
 

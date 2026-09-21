@@ -27,7 +27,7 @@
 // wrong. A Write is checked whole, because every line of it is this turn's.
 //
 // PreToolUse is the one event that runs before the text lands. Merge request descriptions
-// and commit messages travel inside Bash commands, which the other two events never see,
+// and commit messages sit inside Bash commands, which the other two events never see,
 // and a denied command does not run. They arrive as a heredoc or as a quoted argument to
 // `-m`, `--description` or `--body`. lib/prose.mjs reads both, and decides which bodies
 // are prose, which are comments, and which are code to leave alone.

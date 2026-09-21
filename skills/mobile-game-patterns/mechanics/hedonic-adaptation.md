@@ -27,7 +27,7 @@ The first chest, animation, or power-up feels special. After dozens of repetitio
 
 ## How it works
 
-People adapt to repeated positive experiences. UI-Patterns recommends spacing or breaking experiences into smaller portions, citing research in which interruptions could renew enjoyment. For games, the useful lesson is broader: preserve contrast. Alternate reward types, allow quiet stretches, and reserve elaborate presentation for genuinely rare moments.
+People adapt to repeated positive experiences. UI-Patterns recommends spacing or breaking experiences into smaller portions, citing research in which interruptions could renew enjoyment. For games, the useful lesson is broader: preserve contrast. Alternate reward types, allow quiet stretches, and reserve elaborate presentation for moments the player sees once or twice a session.
 
 ## Mobile-game application
 

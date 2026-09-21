@@ -73,7 +73,7 @@ Pokémon GO posts a new Weekly Challenge every Tuesday at 00:00 UTC. A progress 
 
 ## Risks and anti-patterns
 
-- Destroying progress because a player slept, worked, traveled, or cared for someone turns a reminder into punishment.
+- Destroying progress because a player slept, worked, was away, or cared for someone turns a reminder into punishment.
 - Tiny claim windows disadvantage players by time zone, disability, job schedule, and family responsibility.
 - Daily streak loss can create anxiety far beyond the value of the reward.
 - Excessive notifications train players to disable all notifications or uninstall.
