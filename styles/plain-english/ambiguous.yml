@@ -1,0 +1,23 @@
+# Words with a more specific replacement that depends on the subject. Reported, not
+# blocked.
+#
+# This is jargon.yml's question at a lower severity. A word belongs here when the plain
+# version is almost always better but the exception is real. "The node holds content"
+# needs a real verb, and "the assumptions hold" is already correct.
+#
+# Blocking those would make the writer argue with the hook instead of picking a word, so
+# hooks/check-prose.mjs prints these under "Also reported, your call" and lets the turn
+# finish.
+#
+# Consumed by vale (npm: @vvago/vale) and by hooks/check-prose.mjs, which shells out to it.
+extends: existence
+message: "'%s' stands in for a more specific word. Write that word, or keep this one if it is already correct."
+level: warning
+ignorecase: true
+tokens:
+  - holds?
+  # "name" as a verb, which reads like an explanation and is not one: "the config names
+  # the packages" should say what it does with them. The noun is left alone, so a
+  # following determiner is required, and `(?-i)` skips the capitalized imperative that
+  # starts a sentence and that the other rule messages use.
+  - (?-i)nam(?:e|es|ed|ing) (?:the|a|an|its|their|our|this|that|these|those|what|which|where)
