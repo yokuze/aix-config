@@ -184,9 +184,8 @@ function blockCounter() {
 function report({ alerts, problems, subject, closing, onBlock = () => { return true; } }) {
    const blocked = alerts.filter((a) => { return a.Severity === 'error'; }),
          reported = alerts.filter((a) => { return a.Severity === 'warning'; }),
-         notes = reported.length
-            ? `\nAlso reported, your call: ${[ ...new Set(reported.map((a) => { return a.Message; })) ].join(' ')}`
-            : '';
+         reports = [ ...new Set(reported.map((a) => { return a.Message; })) ].join(' '),
+         notes = reported.length ? `\nAlso reported, your call: ${reports}` : '';
 
    // Each rule file words its own message, and repeating them beats one sentence written to
    // cover all of them: a British spelling and a vague term need different fixes.
@@ -196,7 +195,7 @@ function report({ alerts, problems, subject, closing, onBlock = () => { return t
 
    if (!problems.length || !onBlock()) {
       if (notes) {
-         write({ systemMessage: `Plain English notes.${notes}` });
+         write({ systemMessage: `Nothing blocked. Fix these unless the word is correct where you used it: ${reports}` });
       }
       process.exit(0);
    }
@@ -205,7 +204,7 @@ function report({ alerts, problems, subject, closing, onBlock = () => { return t
    // fix that does not involve going to find a value.
    const labelTest = blocked.some((a) => { return a.Check === 'plain-english.vague'; })
       ? [
-         'The test: if a sentence refers to a thing, name that thing. If it asserts a behavior,',
+         'The test: if a sentence refers to a thing, say which thing. If it asserts a behavior,',
          'give the value or say where the behavior is defined. A sentence with neither is a label.',
          'If you do not have the value, go and measure it, then rewrite.',
       ]
