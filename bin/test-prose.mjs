@@ -299,3 +299,19 @@ const scriptAlerts = (lintText(script[0].body, script[0].ext) ?? [])
 
 assert.deepEqual(scriptAlerts, [ 'carries', 'surface' ]);
 process.stdout.write(`A script heredoc is read as the file it writes: ${scriptAlerts.join(', ')}\n`);
+
+// A one-sentence doc comment is shorter than any character floor, and it is still prose.
+// Found while checking the rule above against a real command rather than a written
+// example, which is the second time a length assumption hid a miss.
+const SHORT = [
+   "python3 - <<'PY'",
+   'import pathlib',
+   "p = pathlib.Path('src/a.ts')",
+   'p.write_text("""/** A robust plan. */""")',
+   'PY',
+].join('\n');
+
+assert.deepEqual(proseIn(SHORT).map((d) => { return [ d.ext, d.body ]; }), [ [ '.ts', '/** A robust plan. */' ] ]);
+// A path and a bare identifier are not content, so neither reaches vale.
+assert.deepEqual(proseIn("python3 - <<'PY'\nimport pathlib\npathlib.Path('src/a.ts').write_text('x')\nPY"), []);
+process.stdout.write('A short doc comment in a script is read, a path in one is not\n');
