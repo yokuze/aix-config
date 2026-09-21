@@ -1,15 +1,20 @@
 #!/usr/bin/env node
-// Checks the agent's writing against the Plain English word lists, at the three points
+// Checks the agent's writing against the Plain English word lists, at the four points
 // where prose leaves the session.
 //
-//   Stop        the reply, after it has been sent
-//   PostToolUse the file just written or edited
-//   PreToolUse  the prose inside a Bash command, before the command runs
+//   Stop          the reply, after it has been sent
+//   SubagentStop  a subagent's report, which its parent reads and often quotes
+//   PostToolUse   the file just written or edited
+//   PreToolUse    the prose inside a Bash command, before the command runs
 //
 // Stop cannot filter anything. It fires once the reply has already streamed to the user,
 // and blocking it only stops the turn from ending, so the correction arrives as a second
 // message. The reply comes from `last_assistant_message` in the payload. The transcript
 // file is the fallback, and in a long session it can lag the reply, which read as a pass.
+//
+// SubagentStop is the same check on the same payload shape, for the report a subagent
+// hands back. Stop never sees that text, because by the time the turn ends
+// `last_assistant_message` is the parent's own reply.
 //
 // A Stop block is bounded per prompt rather than by `stop_hook_active`. Claude Code sets
 // that flag on every Stop after a block, for the rest of the turn, and standing down on it
@@ -35,9 +40,10 @@
 // someone else's copy, so a false positive there must not stop anything.
 //
 // Register in ~/.claude/settings.json:
-//   "Stop":        [ { "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
-//   "PostToolUse": [ { "matcher": "Write|Edit", "hooks": [ { ...same... } ] } ]
-//   "PreToolUse":  [ { "matcher": "Bash", "hooks": [ { ...same... } ] } ]
+//   "Stop":         [ { "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
+//   "SubagentStop": [ { "hooks": [ { ...same... } ] } ]
+//   "PostToolUse":  [ { "matcher": "Write|Edit", "hooks": [ { ...same... } ] } ]
+//   "PreToolUse":   [ { "matcher": "Bash", "hooks": [ { ...same... } ] } ]
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
