@@ -1,0 +1,28 @@
+Recorded 2026-09-08. A python heredoc writes a source file, so the text reached the
+commit unread: no redirect, so PreToolUse saw no prose, and no Write or Edit, so
+PostToolUse never ran. Trimmed to the one replacement that matters. The comment itself is
+the recorded text, unchanged.
+
+cd "$(git rev-parse --show-toplevel)" && python3 - <<'PY'
+import pathlib
+p = pathlib.Path('src-web/app/views/templates/partials/manage-downloads-target.ts')
+s = p.read_text()
+
+s = s.replace("""/**
+ * The item's own cover.
+ */""",
+"""/**
+ * The item's own cover, in the shape the dialog's rows draw.
+ *
+ * Resolved here rather than taken from whatever opened the dialog. A card hands over the
+ * thumbnail its own surface asked for — a Teaching Toolbox card's is a 1200x600 `lsr`
+ * with no size — and rendering that in a list row gives a wide strip where the mockups
+ * draw a square.
+ *
+ * Falls back to the node's own images, then to the single relative `image` a publication
+ * TOC's document node carries, which is the only cover an article has: a document has no
+ * `AppContentItem`.
+ */""")
+
+p.write_text(s)
+PY

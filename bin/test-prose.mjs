@@ -18,13 +18,17 @@
 //   * every sentence in test-fixtures/escaped.ts, each one copied from the commit it
 //     reached before a rule caught it, is reported at the severity that would have
 //     stopped it
+//   * the recorded command in test-fixtures/escaped-command.txt, a script heredoc that
+//     writes a source file, is read as that file
 
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
-import { REPO_ROOT, isChecked, lintFiles, proseIn, punctuationProblems, syncProblem, valeBinary } from '../lib/prose.mjs';
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+   REPO_ROOT, isChecked, lintFiles, lintText, proseIn, punctuationProblems, syncProblem, valeBinary,
+} from '../lib/prose.mjs';
 
 if (!valeBinary()) {
    process.stderr.write('vale is not installed. Run npm install.\n');
@@ -276,3 +280,22 @@ assert.deepEqual(
    ],
 );
 process.stdout.write(`Every recorded miss is caught: ${Object.values(escaped).flat().length} of them\n`);
+
+// The recorded command, read as the file its script writes.
+//
+// A `python3 - <<'PY'` that edits a file has no redirect and no message flag, so nothing
+// in the parser saw it and no Write or Edit ran. That was the last route to a commit
+// that reached no event.
+const recorded = proseIn(readFileSync(join(REPO_ROOT, 'test-fixtures/escaped-command.txt'), 'utf8')),
+      script = recorded.filter((c) => { return c.ext === '.ts'; });
+
+assert.equal(script.length, 1, 'the script resolves to the one file it writes');
+assert.equal(script[0].prose, false, 'a .ts target is read for its comments');
+
+const scriptAlerts = (lintText(script[0].body, script[0].ext) ?? [])
+   .filter((a) => { return a.Severity === 'error'; })
+   .map((a) => { return a.Match; })
+   .sort();
+
+assert.deepEqual(scriptAlerts, [ 'carries', 'surface' ]);
+process.stdout.write(`A script heredoc is read as the file it writes: ${scriptAlerts.join(', ')}\n`);
