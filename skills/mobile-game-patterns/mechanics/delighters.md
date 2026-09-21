@@ -31,7 +31,7 @@ A familiar action occasionally receives a context-sensitive response that exceed
 
 ## Mobile-game application
 
-Use a character reaction to an elegant move, a rare background gag, tactile cookie crumbs, or a completion animation that reflects the actual board. Keep frequent actions fast; save larger moments for genuine peaks.
+Use a character reaction to a high-scoring move, a rare background gag, tactile cookie crumbs, or a completion animation that reflects the actual board. Keep frequent actions fast; save larger moments for genuine peaks.
 
 ## Implementation guidance
 

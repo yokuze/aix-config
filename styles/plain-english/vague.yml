@@ -45,6 +45,11 @@ tokens:
   - robust
   - performant
   - innovative
+  - significant(?:ly)?
+  - powerful(?:ly)?
+  - elegant(?:ly)?
+  - first.class
+  - game.chang(?:er|ers|ing)
   # Verbs that claim progress without naming it
   - foster
   - (?-i)underscore[sd]? (?:the|how|that|why|a|an|our|its|their)

@@ -25,7 +25,7 @@
    * Did I address everything I was asked to?
    * Run `npm run standards` (or `tsc` / `eslint` / `commitlint` / `markdownlint` /
       `cargo lint-clippy && cargo lint-fmt` as appropriate)
-   * Test significant changes by:
+   * Test any change to behavior by:
       * Running the tests
       * Running the app and manually testing the changes (Tauri MCP/CLI or Playwright MCP/CLI)
 

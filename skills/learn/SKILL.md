@@ -25,7 +25,7 @@ asks you to set up context tracking (e.g. "initialize .context", "start tracking
   to initialize
 - **User explicitly asks to initialize context tracking** → Initialize
 - **Starting a session with an existing `.context/`** → Recall
-- **After completing a significant task (`.context/` exists)** → Record
+- **After completing a task that changed code or a decision (`.context/` exists)** → Record
 - **User says "remember this" or similar** → Initialize first if needed, then Record
 - **Memory feels stale, disorganized, or bloated** → Consolidate or Defragment
 
@@ -122,7 +122,7 @@ Consider spawning a subagent for consolidation so it does not block the main int
 When memory files become unwieldy, reorganize them.
 
 - **Split** files that exceed ~200 lines into focused subtopic files
-- **Merge** small files that overlap significantly into a single file
+- **Merge** small files that repeat each other into a single file
 - **Rename** files and directories whose names no longer reflect their contents
 - **Update** frontmatter descriptions after every structural change
 After defragmenting, verify the directory structure still makes sense by listing it and

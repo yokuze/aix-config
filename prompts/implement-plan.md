@@ -49,7 +49,7 @@ If this is a monorepo, ask: "does this logic belong in a shared package (e.g., `
 
 Check if the functionality already exists in an existing library or package. Is there a
 package/dependency that is already installed in the project that provides this
-functionality? If not, is this change significant enough that I should search for one and
+functionality? If not, is this change large enough that I should search for one and
 recommend it?
 
 Examples: Parsing, validation, formatting.
