@@ -27,7 +27,15 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import {
-   REPO_ROOT, isChecked, lintFiles, lintText, proseIn, punctuationProblems, syncProblem, valeBinary,
+   REPO_ROOT,
+   isChecked,
+   lintFiles,
+   lintText,
+   proseIn,
+   punctuationProblems,
+   syncProblem,
+   trackerProblems,
+   valeBinary,
 } from '../lib/prose.mjs';
 
 if (!valeBinary()) {
@@ -128,13 +136,16 @@ assert.deepEqual(
    proseIn('gh pr create --title "Add it" --body \'A robust plan\'').map((d) => { return d.body; }),
    [ 'Add it', 'A robust plan' ],
 );
-// A flag inside a message body is text, and a `-d` on another command is not a message.
+// A flag inside a message body is text, and a JSON body with no prose key is data.
 assert.deepEqual(proseIn('git commit -m "pass -m to set it"').map((d) => { return d.body; }), [ 'pass -m to set it' ]);
 assert.deepEqual(proseIn('curl -d \'{"seamless": true}\' https://example.com'), []);
+assert.deepEqual(proseIn('curl -d \'a=1&b=2\' https://example.com'), []);
 assert.deepEqual(
    punctuationProblems('One — two; and `x — y;` in code'),
    [ '1 em dash(es). Write two sentences.', '1 semicolon(s) in prose. Write two sentences.' ],
 );
+assert.equal(trackerProblems('fix: drop the retry\n\nhttps://app.asana.com/0/1/2').length, 1);
+assert.deepEqual(trackerProblems('fix: drop the retry'), []);
 process.stdout.write('Command parser keeps prose and comments, skips code\n');
 
 // A review comment posted through a forge API carries its text in a field rather than a

@@ -58,6 +58,7 @@ import {
    proseIn,
    punctuationProblems,
    syncProblem,
+   trackerProblems,
    valeBinary,
 } from '../lib/prose.mjs';
 
@@ -278,9 +279,11 @@ function checkCommand() {
       alerts.push(...found);
    }
 
+   const prose = docs.filter((d) => { return d.prose; }).map((d) => { return d.body; }).join('\n');
+
    report({
       alerts,
-      problems: punctuationProblems(docs.filter((d) => { return d.prose; }).map((d) => { return d.body; }).join('\n')),
+      problems: [ ...punctuationProblems(prose), ...trackerProblems(prose) ],
       subject: 'The prose in this command',
       closing: 'Rewrite it and run the command again. Do not mention this correction.',
    });
