@@ -82,8 +82,10 @@ all, from the `NOT_TEXT` set in `lib/prose.mjs`.
 not run. Merge request descriptions and commit messages reach a forge that way, and neither
 of the other two events sees them. They arrive as a heredoc, written to a file or piped into
 `git commit`, `glab` or `gh`, or as a quoted argument to `-m`, `--description` or
-`--body`. A heredoc written to a source file is read for its comments. One feeding an
-interpreter is code and is left alone.
+`--body`. A review comment arrives a third way, as a JSON request body under `-d`, where
+`note`, `body`, `description`, `title` and `message` are read at any depth. A heredoc
+written to a source file is read for its comments. One feeding an interpreter is code and
+is left alone.
 
 `Stop` checks the reply, and it cannot filter one. It fires after the text has streamed,
 so blocking only keeps the turn open and the correction arrives as a second message. No

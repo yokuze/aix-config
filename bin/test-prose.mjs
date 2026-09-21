@@ -8,8 +8,8 @@
 //     message, a thrown error, a command's help text, a log line, and every string in a
 //     file that opts in. Each is reported at the line and column of the call it sits in
 //   * the command parser reads heredocs, `-m`-style message arguments, a forge API's
-//     `-f body=` field and the contents of a `-F` message file, and tells prose and
-//     comments from code
+//     `-f body=` field, the prose keys in a `-d` JSON request body and the contents of a
+//     `-F` message file, and tells prose and comments from code
 //   * every extension is checked except the data formats .vale.ini names and the binary
 //     ones lib/prose.mjs never opens
 //   * the hook blocks on each of its three events, and a Stop block is bounded per prompt
@@ -161,6 +161,22 @@ assert.deepEqual(proseIn('git commit -F /nope/missing.txt'), []);
 assert.deepEqual(proseIn('git commit -F "$MSG_PATH"'), []);
 assert.deepEqual(proseIn('grep -F pattern notes.txt'), []);
 process.stdout.write('Command parser reads a forge API field and a message file\n');
+
+// A draft review comment reaches its host as a JSON request body rather than a message
+// flag: one string under `note` on GitLab, and one `body` per comment nested in a
+// `comments` array on GitHub. Every draft the review skills post went unread until `-d`
+// was parsed as JSON.
+assert.deepEqual(
+   proseIn('curl -X POST https://gitlab.example/api/v4/projects/1/merge_requests/2/draft_notes'
+      + ' -d \'{"note": "A note nobody read", "position": {"new_line": 4}}\'').map((d) => { return d.body; }),
+   [ 'A note nobody read' ],
+);
+assert.deepEqual(
+   proseIn('curl -X POST https://api.github.com/repos/o/r/pulls/3/reviews'
+      + ' -d \'{"comments": [{"path": "a.ts", "line": 4, "body": "A comment nobody read"}]}\'').map((d) => { return d.body; }),
+   [ 'A comment nobody read' ],
+);
+process.stdout.write('Command parser reads a draft comment out of a JSON request body\n');
 
 // The default is that everything counts as prose. A commit message written to a `.txt`
 // file reached a repository unread while this was an allowlist of extensions.
