@@ -72,7 +72,7 @@ the second pass there too. An `Edit` is checked on its replacement's own lines, 
 that already has a banned term elsewhere does not block work that never touched it.
 
 Every file is checked, whatever its extension. The `[*]` section in `.vale.ini` sets the
-rules, and the section under it names the data formats to skip: JSON, CSV, lockfiles and
+rules, and the section under it lists the data formats to skip: JSON, CSV, lockfiles and
 the rest, where a listed word inside a string value is not prose. That section is the one
 to edit, and a project's own `.vale.ini` replaces it. Binary formats never reach vale at
 all, from the `NOT_TEXT` set in `lib/prose.mjs`.
@@ -104,10 +104,16 @@ legitimate use when quoting a spec or someone else's copy, and a false positive 
 stop a turn. vale parses Markdown and source comments, so a symbol named `mechanism` is not
 a hit, and a `colourScheme` in backticks is not one either.
 
+A rule written in response to a term that reached a commit puts that text into
+`test-fixtures/escaped.ts`, and `bin/test-prose.mjs` asserts the check and severity it
+has to produce. Verifying against a fresh one-line example instead is what let the first
+entry there survive its own fix: the pattern matched the example, and a literal space in
+it could not cross the line break in the real file.
+
 ## Using these rules in another project
 
 `.vale.ini` and `styles/` together are a vale package, and vale accepts a local directory
-as a package. Nothing needs building, zipping or publishing: another project names this
+as a package. Nothing needs building, zipping or publishing: another project points at this
 checkout and runs `vale sync`.
 
 ```ini

@@ -53,7 +53,7 @@ tokens:
   - game.chang(?:er|ers|ing)
   # Verbs that claim progress without naming it
   - foster
-  - (?-i)underscore[sd]? (?:the|how|that|why|a|an|our|its|their)
+  - (?-i)underscore[sd]?\s+(?:the|how|that|why|a|an|our|its|their)
   - unravel
   - travel(?:s|ed|led|ing|ling)?
   - carr(?:y|ies|ied|ying)

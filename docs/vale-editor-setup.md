@@ -127,7 +127,7 @@ it walks the repository root, which is the slowest way to call it.
 it usable as a CI check.
 
 To have Devin see the rules rather than only the failures, point its instructions at
-`output-styles/plain-english.md`. The failure message names the term and the check, and
+`output-styles/plain-english.md`. The failure message gives the term and the check, and
 the style file holds the reasoning behind them.
 
 ## Adding or changing a term
@@ -177,7 +177,7 @@ not misspelled. Every step that cuts the false positives accepts more British sp
 because one dial moves both: `en_US-large` gives back 25 real words and 89 British ones.
 
 `british.yml` sits outside that trade. It lists 2286 spellings, hits none of this
-repo's words, and names the American spelling instead of asking "did you mean". What it
+repo's words, and gives the American spelling instead of asking "did you mean". What it
 does not do is catch ordinary typos, which is a different job and no rule here does it.
 
 Run `npm run test:prose` afterwards. It checks that a Vue component is still read in full:

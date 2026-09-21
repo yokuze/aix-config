@@ -15,6 +15,9 @@
 //   * the hook blocks on each of its three events, and a Stop block is bounded per prompt
 //   * a consumer whose synced copy of a package is missing or out of date is reported,
 //     because vale exits 0 and says nothing in both cases
+//   * every sentence in test-fixtures/escaped.ts, each one copied from the commit it
+//     reached before a rule caught it, is reported at the severity that would have
+//     stopped it
 
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -250,3 +253,26 @@ assert.match(syncProblem(consumerConfig), /old copy/, 'an old copy is reported')
 assert.match(syncProblem(consumerConfig), /will not replace it/, 'and says why a re-sync is not the fix');
 assert.equal(syncProblem(join(REPO_ROOT, '.vale.ini')), null, 'a config naming no packages is silent');
 process.stdout.write('A missing or out-of-date copy of a vale package is reported\n');
+
+// Every recorded miss, at the severity that would have stopped it.
+//
+// A rule verified only against a fresh one-line example is how the first entry escaped:
+// the pattern matched the example and could not cross the line break in the real file.
+// Adding a rule in response to a miss means adding that text here.
+const escaped = lintFiles([ 'test-fixtures/escaped.ts' ]);
+
+if (escaped === null) {
+   process.stderr.write('vale failed.\n');
+   process.exit(1);
+}
+
+assert.deepEqual(
+   Object.values(escaped).flat()
+      .map((a) => { return `${a.Line} ${a.Severity} ${a.Check} ${JSON.stringify(a.Match)}`; })
+      .sort(),
+   [
+      '13 error plain-english.jargon "names\\nthe"',
+      '22 error plain-english.vague "underscores\\nthe"',
+   ],
+);
+process.stdout.write(`Every recorded miss is caught: ${Object.values(escaped).flat().length} of them\n`);

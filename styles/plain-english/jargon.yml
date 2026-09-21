@@ -1,4 +1,4 @@
-# Words that name the move instead of the thing. Blocked, not reported.
+# Words that label the move instead of the thing. Blocked, not reported.
 #
 # These sit between the other two lists. A word in vague.yml has no plain use at all, and
 # a word in substitutions.yml has exactly one plain replacement. A word here has several,
@@ -11,9 +11,15 @@
 #
 # Consumed by vale (npm: @vvago/vale) and by hooks/check-prose.mjs, which shells out to it.
 extends: existence
-message: "'%s' names the move, not the thing. Say what it actually is."
+message: "'%s' labels the move, not the thing. Say what it actually is."
 level: error
 ignorecase: true
 tokens:
   - prob(?:e|es|ed|ing)
   - guard(?:ed|ing)
+  # `name` as a declarative verb. `\s+` rather than a space, because prose wraps and a
+  # pattern that cannot cross a line break misses every wrapped comment. A following
+  # determiner keeps the noun out. Only `names` and `named` are here: the bare verb and
+  # the gerund carry the imperative ("so name the narrowest scope") and the instruction
+  # ("start by naming the stores"), which are correct, so those sit in ambiguous.yml.
+  - nam(?:es|ed)\s+(?:the|a|an|its|their|our|this|that|these|those|what|which|where)

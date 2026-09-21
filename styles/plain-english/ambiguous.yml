@@ -11,13 +11,12 @@
 #
 # Consumed by vale (npm: @vvago/vale) and by hooks/check-prose.mjs, which shells out to it.
 extends: existence
-message: "'%s' stands in for a more specific word. Write that word, or keep this one if it is already correct."
+message: "'%s' stands in for a more specific word. Write that word."
 level: warning
 ignorecase: true
 tokens:
   - holds?
-  # "name" as a verb, which reads like an explanation and is not one: "the config names
-  # the packages" should say what it does with them. The noun is left alone, so a
-  # following determiner is required, and `(?-i)` skips the capitalized imperative that
-  # starts a sentence and that the other rule messages use.
-  - (?-i)nam(?:e|es|ed|ing) (?:the|a|an|its|their|our|this|that|these|those|what|which|where)
+  # The bare verb and the gerund. "Some files name the banned words" wants "list", and
+  # "start by naming the stores" is already right, so this reports rather than blocks.
+  # `names` and `named` have no such correct use and are blocked in jargon.yml.
+  - (?-i)nam(?:e|ing)\s+(?:the|a|an|its|their|our|this|that|these|those|what|which|where)

@@ -35,7 +35,7 @@ The game detects an action worth reinforcing and responds immediately with feedb
 - A clever combo receives a stronger word, character reaction, or effect.
 - A rare, difficult sequence receives the fullest celebration.
 
-Specificity matters. "Excellent throw" teaches more than "Amazing!" because it names the quality being judged. Praise should follow the player's action, not precede it, and should not claim skill when an outcome was random.
+Specificity matters. "Excellent throw" teaches more than "Amazing!" because it states the quality being judged. Praise should follow the player's action, not precede it, and should not claim skill when an outcome was random.
 
 ## Mobile-game application
 
