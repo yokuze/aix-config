@@ -93,8 +93,8 @@ the session's scratchpad, so the corrected reply is checked too and the turn sti
 The rules come from the nearest `.vale.ini` above the file being checked, or above the
 working directory for a reply. A project that points at its own vale package is therefore
 checked with its own rules and its own vocabulary, and this repo's config is the fallback
-for a project with none. When that project's packages are not synced, vale cannot run
-and the hook says so rather than passing the text silently.
+for a project with none. When that project's packages are not synced, or its copy of one
+is out of date, the hook says so rather than passing the text silently.
 
 All three block on `vague.yml`, `jargon.yml` and `british.yml`, and on `Vale.Repetition`,
 which catches a word typed twice in a row. They also block on em dashes and semicolons in
@@ -133,6 +133,13 @@ Four things about that path decide whether it works, and each one fails quietly:
   package folder's basename, so two packages in folders of the same name overwrite each
   other's config. The loser takes its rules with it and vale still exits 0, which reads as
   clean prose.
+
+A sync is a copy, so every consumer keeps its own snapshot of these rules. Editing a rule
+here changes nothing for them until each one syncs again, and `vale sync` does not replace
+a package already in `StylesPath`. It reports success and leaves the old files. Delete
+`StylesPath` and sync, which is what a project's setup script should do. `syncProblem` in
+`lib/prose.mjs` compares the two copies and the hook reports the difference, so a stale
+consumer says so instead of checking against rules nobody has now.
 
 Because that path is machine-specific, a project sharing a repo with other people should
 generate its `.vale.ini` rather than commit one, and git-ignore the result. A short setup

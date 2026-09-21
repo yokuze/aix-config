@@ -53,11 +53,11 @@ import {
    configFor,
    isChecked,
    isSkipped,
-   isUnsynced,
    lintFiles,
    lintText,
    proseIn,
    punctuationProblems,
+   syncProblem,
    valeBinary,
 } from '../lib/prose.mjs';
 
@@ -95,21 +95,19 @@ function deny(reason) {
 }
 
 /**
- * Reports and stands down when the config governing this path has no rules to apply.
+ * Reports and stands down when the config governing this path cannot apply current rules.
  *
- * A project pointing at a vale package it has not synced is the case that matters. vale
- * finds no styles, exits 0, and reports nothing, which is indistinguishable from prose
- * that passed. Better to say the check did not happen.
+ * A project pointing at a vale package it has not synced, or holding an old copy of one,
+ * is the case that matters. vale exits 0 either way, which is indistinguishable from
+ * prose that passed. Better to say the check did not happen.
  */
 function standDownIfUnsynced(startDir) {
-   const config = configFor(startDir);
+   const problem = syncProblem(configFor(startDir));
 
-   if (!isUnsynced(config)) {
+   if (!problem) {
       return;
    }
-   write({
-      systemMessage: `Prose check skipped: ${config} names vale packages that are not synced. Run \`vale sync\` there.`,
-   });
+   write({ systemMessage: `Prose check skipped: ${problem}` });
    process.exit(0);
 }
 

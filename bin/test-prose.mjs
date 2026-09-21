@@ -13,13 +13,15 @@
 //   * every extension is checked except the data formats .vale.ini names and the binary
 //     ones lib/prose.mjs never opens
 //   * the hook blocks on each of its three events, and a Stop block is bounded per prompt
+//   * a consumer whose synced copy of a package is missing or out of date is reported,
+//     because vale exits 0 and says nothing in both cases
 
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { mkdtempSync, writeFileSync } from 'node:fs';
-import { REPO_ROOT, isChecked, lintFiles, proseIn, punctuationProblems, valeBinary } from '../lib/prose.mjs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { REPO_ROOT, isChecked, lintFiles, proseIn, punctuationProblems, syncProblem, valeBinary } from '../lib/prose.mjs';
 
 if (!valeBinary()) {
    process.stderr.write('vale is not installed. Run npm install.\n');
@@ -222,3 +224,29 @@ const inline = runHook({
 assert.equal(inline.hookSpecificOutput?.permissionDecision, 'deny');
 assert.match(inline.hookSpecificOutput.permissionDecisionReason, /carries/);
 process.stdout.write('PreToolUse denies a commit message given to -m\n');
+
+// A consumer of a vale package, so the three states of its synced copy can be compared:
+// never synced, an old copy, and current. `vale sync` reports success without replacing a
+// package already in StylesPath, which is the state that used to read as a clean pass.
+const pkg = mkdtempSync(join(tmpdir(), 'prose-package-')),
+      consumer = mkdtempSync(join(tmpdir(), 'prose-consumer-')),
+      consumerConfig = join(consumer, '.vale.ini'),
+      styles = join(consumer, 'copied');
+
+mkdirSync(join(pkg, 'styles', 'plain-english'), { recursive: true });
+writeFileSync(join(pkg, 'styles', 'plain-english', 'vague.yml'), 'tokens:\n  - robust\n');
+writeFileSync(consumerConfig, `StylesPath = copied\nPackages = ${pkg}\n`);
+
+assert.match(syncProblem(consumerConfig), /not synced/, 'a missing StylesPath is reported');
+
+mkdirSync(join(styles, 'plain-english'), { recursive: true });
+writeFileSync(join(styles, 'plain-english', 'vague.yml'), 'tokens:\n  - robust\n');
+
+assert.equal(syncProblem(consumerConfig), null, 'a current copy is silent');
+
+writeFileSync(join(pkg, 'styles', 'plain-english', 'vague.yml'), 'tokens:\n  - robust\n  - seamless\n');
+
+assert.match(syncProblem(consumerConfig), /old copy/, 'an old copy is reported');
+assert.match(syncProblem(consumerConfig), /will not replace it/, 'and says why a re-sync is not the fix');
+assert.equal(syncProblem(join(REPO_ROOT, '.vale.ini')), null, 'a config naming no packages is silent');
+process.stdout.write('A missing or out-of-date copy of a vale package is reported\n');
