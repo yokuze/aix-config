@@ -25,6 +25,5 @@ tokens:
   # The bare verb and the gerund. "Some files name the banned words" wants "list", and
   # "start by naming the stores" is already right, so this reports rather than blocks.
   # `names` and `named` have no such correct use and are blocked in jargon.yml.
-  # `(?-i:...)` rather than a bare `(?-i)`, which would turn case-insensitivity off for
-  # every token listed after it once Vale joins them into one alternation.
-  - (?-i:nam(?:e|ing))\s+(?:the|a|an|its|their|our|this|that|these|those|what|which|where)
+  # Regex tokens need their own case flag in Vale, including at a sentence's start.
+  - (?i:nam(?:e|ing)\s+(?:the|a|an|its|their|our|this|that|these|those|what|which|where))

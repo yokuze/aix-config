@@ -220,6 +220,66 @@ function runHook(input) {
    return result.stdout ? JSON.parse(result.stdout) : {};
 }
 
+const missedComment = '"holds this on the route" and "releases the hold" do not say what the code does. '
+   + 'Name the field and the value instead.';
+
+for (const text of [ 'name the field.', 'Name the field.', 'Naming the field.', 'Name\nthe field.' ]) {
+   const found = lintText(text);
+
+   assert.ok(found);
+   assert.equal(found.some((a) => { return a.Check === 'plain-english.ambiguous'; }), true, text);
+}
+
+assert.deepEqual(lintText('The field name is status. The names are Alice and Bob.'), []);
+
+for (const content of [
+   JSON.stringify([ { path: 'src/a.ts', line: 4, note: missedComment } ]),
+   JSON.stringify({ comments: [ { path: 'src/a.ts', line: 4, body: missedComment } ] }),
+]) {
+   const result = runHook({
+      hook_event_name: 'PreToolUse',
+      tool_name: 'Write',
+      tool_input: { file_path: join(scratch, 'findings.json'), content },
+   });
+
+   assert.equal(result.hookSpecificOutput?.permissionDecision, 'deny');
+   assert.match(result.hookSpecificOutput.permissionDecisionReason, /Name the/);
+}
+
+assert.deepEqual(runHook({
+   hook_event_name: 'PreToolUse',
+   tool_name: 'Write',
+   tool_input: { file_path: join(scratch, 'data.json'), content: '{ "value": "a robust plan", "name": "Name the field" }' },
+}), {});
+
+for (const command of [
+   "gh api repos/o/r/issues/1/comments -f body='Name the field and the value instead.'",
+   'curl -d \'{"note":"Name the field and the value instead."}\' https://example.com',
+]) {
+   const result = runHook({ hook_event_name: 'PreToolUse', tool_name: 'Bash', tool_input: { command } });
+
+   assert.equal(result.hookSpecificOutput?.permissionDecision, 'deny');
+   assert.match(result.hookSpecificOutput.permissionDecisionReason, /Name the/);
+}
+
+const keptComment = 'Name the output file `config.json`.\n\nKept "Name the": this instruction assigns the literal filename.';
+
+for (const [ notes, blocks ] of [
+   [ [ { note: keptComment } ], false ],
+   [ [ { note: keptComment }, { note: 'Name the field and the value instead.' } ], true ],
+   [ [ { note: 'A robust plan.\n\nKept "robust": this wording is from the published spec.' } ], true ],
+   [ [ { note: 'Specify the field and the value it receives.' } ], false ],
+]) {
+   const result = runHook({
+      hook_event_name: 'PreToolUse',
+      tool_name: 'Write',
+      tool_input: { file_path: join(scratch, 'findings.json'), content: JSON.stringify(notes) },
+   });
+
+   assert.equal(result.hookSpecificOutput?.permissionDecision === 'deny', blocks);
+}
+process.stdout.write('Review wording is checked before a JSON payload is saved, including sentence capitals\n');
+
 const stop = (extra) => {
    return runHook({
       hook_event_name: 'Stop',

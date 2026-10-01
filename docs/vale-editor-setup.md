@@ -6,7 +6,7 @@ points a different tool at the same files, so a term added there reaches all of 
 Two separate things share the name:
 
 * **Vale**, the CLI. Installed here as `@vvago/vale`. Used by `npm run lint:prose` and by
-  the Claude Code hooks, which check both a reply and a file the agent just wrote.
+  the Claude Code hooks, which check replies and pending writes before a tool saves them.
 * **vale-ls**, the language server. Gives live diagnostics as you type. Published only as
   a GitHub release archive, so each editor below installs or locates it separately.
 
@@ -16,15 +16,15 @@ Two separate things share the name:
 `html`, so an editor reports the template's prose and stops there.
 
 Comments in the `<script>` and `<style>` blocks need a second pass over the same bytes
-with `--ext=.ts`. `bin/lint-prose.mjs` does that, and so does the Claude Code
-`PostToolUse` hook for a file it just wrote. Run `npm run lint:prose` for full coverage
-of the whole repo.
+with `--ext=.ts`. `bin/lint-prose.mjs` does that. The Claude Code `PreToolUse` hook
+checks the supplied text before a Write or Edit saves it. Run `npm run lint:prose`
+for full coverage of the whole repo.
 
 | Where | Markdown and MDX | Vue template | Vue script and style comments |
 |---|---|---|---|
 | Editor (vale-ls) | yes | yes | no |
 | `npm run lint:prose` | yes | yes | yes |
-| Claude Code hooks | yes | yes | yes |
+| Claude Code hooks | yes | yes | no |
 
 ## Install vale-ls
 

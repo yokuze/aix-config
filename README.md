@@ -38,6 +38,10 @@ npx @a1st/aix install --only hooks --user
 This repository includes a Vale-based plain-English prose checker that flags vague
 language, jargon, and British spellings in documentation, comments, and agent outputs.
 
+Before saving JSON, the hook checks `note`, `body`, `description`, `title`, and `message`
+values. Review `note` and `body` fields must also address warnings. A `Kept` explanation
+applies only to the comment that includes it.
+
 ### Setup
 
 Install the Vale binary and dependencies:

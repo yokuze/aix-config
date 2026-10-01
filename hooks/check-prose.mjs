@@ -36,8 +36,8 @@
 //
 // vale reports `error` for terms with no plain use and `warning` for terms with a plain
 // replacement. On a file or a command, only errors block, because a warning has a
-// legitimate use when quoting a spec or someone else's copy. On a reply, an unanswered
-// warning blocks too: see `keptTerms`.
+// legitimate use when quoting a spec or someone else's copy. On a reply or a review
+// comment, an unanswered warning blocks too: see `keptTerms`.
 //
 // Register in ~/.claude/settings.json:
 //   "Stop":         [ { "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
@@ -54,6 +54,7 @@ import {
    isSkipped,
    lintText,
    proseIn,
+   proseInJSON,
    punctuationProblems,
    syncProblem,
    trackerProblems,
@@ -231,6 +232,34 @@ function report({ alerts, problems, subject, closing, kept = null, onBlock = () 
    process.exit(0);
 }
 
+/** Checks each comment's warning responses separately, so one cannot excuse another. */
+function checkDocs(docs) {
+   const alerts = [],
+         problems = [];
+
+   for (const doc of docs) {
+      const { terms, forLint } = doc.review ? keptTerms(doc.body) : { terms: null, forLint: doc.body },
+            found = lintText(forLint, doc.ext);
+
+      if (found === null) {
+         write({ systemMessage: VALE_FAILED });
+         process.exit(0);
+      }
+      if (terms) {
+         problems.push(...found.filter((a) => { return a.Severity === 'warning' && !terms.has(a.Match.toLowerCase()); })
+            .map((a) => {
+               return `${a.Message} Fix it, or keep it with a line reading: Kept "${a.Match}": <why it is correct here>`;
+            }));
+      }
+      alerts.push(...found.filter((a) => { return !terms || a.Severity !== 'warning'; }));
+      if (doc.prose) {
+         problems.push(...punctuationProblems(forLint));
+      }
+   }
+
+   return { alerts, problems };
+}
+
 function checkCommand() {
    if (payload.tool_name !== 'Bash') {
       process.exit(0);
@@ -242,23 +271,12 @@ function checkCommand() {
    }
    standDownIfUnsynced(process.cwd());
 
-   const alerts = [];
-
-   for (const doc of docs) {
-      const found = lintText(doc.body, doc.ext);
-
-      if (found === null) {
-         write({ systemMessage: VALE_FAILED });
-         process.exit(0);
-      }
-      alerts.push(...found);
-   }
-
-   const prose = docs.filter((d) => { return d.prose; }).map((d) => { return d.body; }).join('\n');
+   const { alerts, problems } = checkDocs(docs),
+         prose = docs.filter((d) => { return d.prose; }).map((d) => { return d.body; }).join('\n');
 
    report({
       alerts,
-      problems: [ ...punctuationProblems(prose), ...trackerProblems(prose) ],
+      problems: [ ...problems, ...trackerProblems(prose) ],
       subject: 'The prose in this command',
       closing: 'Rewrite it and run the command again. Do not mention this correction.',
    });
@@ -290,16 +308,18 @@ function checkFile() {
 
    standDownIfUnsynced(dirname(file));
 
-   const alerts = lintText(written, extname(file));
+   const ext = extname(file),
+         docs = ext === '.json' ? proseInJSON(written) : [ { body: written, ext, prose: PUNCTUATED.has(ext) } ];
 
-   if (alerts === null) {
-      write({ systemMessage: VALE_FAILED });
+   if (!docs.length) {
       process.exit(0);
    }
 
+   const { alerts, problems } = checkDocs(docs);
+
    report({
       alerts,
-      problems: PUNCTUATED.has(extname(file)) ? punctuationProblems(written) : [],
+      problems,
       subject: `What you are writing to ${file}`,
       closing: 'Send the corrected write. Do not mention this correction or what you changed.',
    });
