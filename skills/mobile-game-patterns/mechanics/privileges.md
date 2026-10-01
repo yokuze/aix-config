@@ -27,7 +27,7 @@ Experienced players often need more agency than beginners, while social systems 
 
 ## How it works
 
-The game grants a temporary or permanent capability after demonstrated skill, contribution, or role assignment. Good privileges support competence and autonomy; they do not simply let veterans dominate newcomers.
+The game grants a temporary or permanent capability after demonstrated skill, contribution, or role assignment. Good privileges support competence and autonomy; they do not only let veterans dominate newcomers.
 
 ## Mobile-game application
 
@@ -44,7 +44,7 @@ Model privileges as explicit capabilities checked on the server, not as hidden U
 
 ## Risks and anti-patterns
 
-Paid competitive power, veteran vote multiplication, opaque moderation, and permanent advantages create an old guard. Never make safety tools a prestige toy. Avoid revoking earned convenience solely to manufacture urgency.
+Paid competitive power, veteran vote multiplication, opaque moderation, and permanent advantages give early players a lead that new players cannot close. Never make safety tools a prestige toy. Avoid revoking earned convenience solely to manufacture urgency.
 
 ## Accessibility and ethics
 

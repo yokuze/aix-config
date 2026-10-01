@@ -51,7 +51,7 @@ State both the requirement and reward in text. Do not rely on animation or sound
 
 ## Metrics
 
-Measure goal starts and completions, time to reward, grant failures, reward-use rate, abandonment near thresholds, and whether rewards change level replay rather than simply adding claim taps.
+Measure goal starts and completions, time to reward, grant failures, reward-use rate, abandonment near thresholds, and whether rewards change level replay rather than only adding claim taps.
 
 ## Applying this pattern
 

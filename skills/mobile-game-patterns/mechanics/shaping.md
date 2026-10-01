@@ -47,7 +47,7 @@ Over-scaffolding produces tutorial obedience rather than transferable skill. A h
 
 ## Accessibility and ethics
 
-Allow replay, skip, slower demonstrations, and input alternatives. Explain the purpose of a gesture in words. Avoid using rewards to train compulsive store visits or notification permissions; shape play skills, not surrender of privacy.
+Allow replay, skip, slower demonstrations, and input alternatives. Explain the purpose of a gesture in words. Avoid using rewards to train compulsive store visits or notification permissions; train play skills, not surrender of privacy.
 
 ## Metrics
 

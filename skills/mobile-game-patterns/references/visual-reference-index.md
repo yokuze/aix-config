@@ -39,7 +39,7 @@ What to study: combo motion, score values, and the remaining board state are vis
 
 ![Clash Royale battle HUD reference](screenshots/clash-royale-battle-hud.webp)
 
-What to study: a real-time HUD must fit tower health, elixir, and the card hand around a play area the player watches constantly. The hand sits at the bottom where thumbs reach, while tower HP reads as small glanceable numbers near the towers. It is dense, but every element has a place and a purpose; nothing waits for a second screen.
+What to study: a real-time HUD must fit tower health, elixir, and the card hand around a play area the player watches constantly. The hand is at the bottom where thumbs reach, while tower HP reads as small glanceable numbers near the towers. It is dense, but every element has a place and a purpose; nothing waits for a second screen.
 
 ## Seasonal event framing (Clash Royale)
 
@@ -57,7 +57,7 @@ What to study: nearly the whole frame is the puzzle. There is no HUD text, no sc
 
 ![Royal Match level intro reference](screenshots/royal-match-level-intro.webp)
 
-What to study: before play, the objective and the move budget sit on one compact card. The player reads the goal, sees the move count, then starts. The game should copy this: state the objective up front, keep the card small, and do not let the intro screen cover the board for long.
+What to study: before play, the objective and the move budget share one compact card. The player reads the goal, sees the move count, then starts. The game should copy this: state the objective up front, keep the card small, and do not let the intro screen cover the board for long.
 
 ## Home and task hub (Royal Match)
 

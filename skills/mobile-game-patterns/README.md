@@ -37,7 +37,7 @@ The folders are deliberately plain:
 
 - `mechanics/` contains the complete UI-Patterns game-mechanics list.
 - `ui/` contains touch, layout, feedback, and session UI patterns.
-- `principles/` contains rules that should shape every screen.
+- `principles/` contains rules that apply to every screen.
 - `trends/` contains current product patterns worth evaluating, not blindly copying.
 - `references/` contains the visual index and locally stored reference images.
 

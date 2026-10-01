@@ -56,7 +56,7 @@ Offer reduced motion, lower flash intensity, haptic control, and a skip option. 
 
 ## Metrics
 
-Measure reward-animation skips, claim delay, repeated-content completion, novelty engagement, return after quiet periods, and self-reported excitement. Falling animation watch time may signal habituation, but it may simply reflect player efficiency.
+Measure reward-animation skips, claim delay, repeated-content completion, novelty engagement, return after quiet periods, and self-reported excitement. Falling animation watch time may signal habituation, but it may instead reflect player efficiency.
 
 ## Applying this pattern
 
