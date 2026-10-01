@@ -1,22 +1,30 @@
 # Words with a more specific replacement that depends on the subject. Reported, not
 # blocked.
 #
-# This is jargon.yml's question at a lower severity. A word belongs here when the plain
+# These are like the words in jargon.yml, but reported instead of blocked. A word belongs here when the plain
 # version is almost always better but the exception is real. "The node holds content"
 # needs a real verb, and "the assumptions hold" is already correct.
 #
-# Blocking those would make the writer argue with the hook instead of picking a word, so
-# hooks/check-prose.mjs prints these under "Also reported, your call" and lets the turn
+# A block on a word that is correct forces a rewrite that makes the text worse, so
+# hooks/check-prose.mjs prints these under "Also reported, not blocked" and lets the turn
 # finish.
 #
 # Consumed by vale (npm: @vvago/vale) and by hooks/check-prose.mjs, which shells out to it.
 extends: existence
-message: "'%s' stands in for a more specific word. Write that word."
+message: "'%s' is usually too general. Use a more specific word, unless it is correct here."
 level: warning
 ignorecase: true
 tokens:
   - holds?
+  # "Swaps the entry" wants "replaces". A swap file and swapping two variables are both
+  # the real operation, so this reports rather than blocks.
+  - swap(?:s|ped|ping)?\b
+  # "The back button reaches a tab root" wants the call, `handlePopState`. "Reaches the
+  # limit" is already correct.
+  - reach(?:es|ed|ing)?\s+(?:a|an|the)\b
   # The bare verb and the gerund. "Some files name the banned words" wants "list", and
   # "start by naming the stores" is already right, so this reports rather than blocks.
   # `names` and `named` have no such correct use and are blocked in jargon.yml.
-  - (?-i)nam(?:e|ing)\s+(?:the|a|an|its|their|our|this|that|these|those|what|which|where)
+  # `(?-i:...)` rather than a bare `(?-i)`, which would turn case-insensitivity off for
+  # every token listed after it once Vale joins them into one alternation.
+  - (?-i:nam(?:e|ing))\s+(?:the|a|an|its|their|our|this|that|these|those|what|which|where)

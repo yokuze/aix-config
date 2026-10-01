@@ -1,25 +1,35 @@
-# Words that label the move instead of the thing. Blocked, not reported.
+# Words with several meanings, where the reader cannot tell which one the writer means.
+# Blocked, not reported.
 #
 # These sit between the other two lists. A word in vague.yml has no plain use at all, and
 # a word in substitutions.yml has exactly one plain replacement. A word here has several,
 # and which one is right depends on what the thing actually was: a "probe" is a test, or a
 # check, or a one-off script, and only the writer knows which.
 #
-# So this file asks rather than tells. That is also why these cannot live in
+# So the message does not suggest one replacement. That is also why these cannot live in
 # substitutions.yml, whose message is fixed at "Write '%s' instead of '%s'." and has to
 # name a replacement.
 #
 # Consumed by vale (npm: @vvago/vale) and by hooks/check-prose.mjs, which shells out to it.
 extends: existence
-message: "'%s' labels the move, not the thing. Say what it actually is."
+message: "'%s' can mean several different things. Write the specific one: for example, a test, a null check, or an early return."
 level: error
 ignorecase: true
 tokens:
   - prob(?:e|es|ed|ing)
-  - guard(?:ed|ing)
+  # Every form of the word except the TypeScript noun. The lookbehind lets `type guard`
+  # and `type guards` through, and `\s` matches the line break when the pair wraps.
+  - (?<!type\s)guard(?:s|ed|ing)?
   # `name` as a declarative verb. `\s+` rather than a space, because prose wraps and a
   # pattern that cannot cross a line break misses every wrapped comment. A following
   # determiner keeps the noun out. Only `names` and `named` are here: the bare verb and
   # the gerund carry the imperative ("so name the narrowest scope") and the instruction
   # ("start by naming the stores"), which are correct, so those sit in ambiguous.yml.
   - nam(?:es|ed)\s+(?:the|a|an|its|their|our|this|that|these|those|what|which|where)
+  # The same verb with its object before it: "the shape you named", "the blocks they
+  # name". Nothing follows the verb, so the rule above cannot see it. A pronoun subject
+  # marks the verb instead. `that` and `which` stay out, because "check that names match"
+  # and "which names are reserved" use the noun. The bare verb only counts with no object
+  # after it, so "if you name the file" reaches ambiguous.yml and is reported, not blocked.
+  - (?:I|you|we|they|he|she|it|who)\s+(?:(?:\w+ly|just|already|also)\s+)?nam(?:es|ed)
+  - (?:I|you|we|they)\s+(?:(?:\w+ly|just|already|also)\s+)?name(?!\s+(?:the|a|an|it|its|your|our|their|this|that|these|those|each|every)\b)

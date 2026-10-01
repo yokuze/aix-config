@@ -1,0 +1,57 @@
+# Words with a plain replacement and no correct use in my writing. Blocked, not reported.
+#
+# The split from substitutions.yml is about the exception, not the severity. A word stays
+# in that file when quoting a spec, an API name, or someone else's copy makes it right:
+# `highlight` is the text-marking feature, `intrinsic` is a CSS keyword, `landscape` is a
+# screen orientation, `drove` describes driving an app from a test. A word belongs here
+# when no such use exists, so a warning only asks me twice for the same edit.
+#
+# This file exists rather than a level change on substitutions.yml, so the message keeps
+# naming the replacement. "Write 'released' instead of 'shipped'" tells me the fix.
+# vague.yml's message cannot, because its tokens have no single replacement.
+#
+# Keys are regular expressions. Verb forms are spelled out, because Vale matches the
+# pattern literally and does not stem: "leverage" alone will not catch "leverages".
+#
+# Consumed by vale (npm: @vvago/vale) and by hooks/check-prose.mjs, which shells out to it.
+extends: substitution
+message: "Write '%s' instead of '%s'."
+level: error
+ignorecase: true
+swap:
+  leverag(?:e|es|ed|ing): use
+  utiliz(?:e|es|ed|ing): use
+  facilitat(?:e|es|ed|ing): help
+  streamlin(?:e|es|ed|ing): make faster
+  "delv(?:e|es|ed|ing)(?: into)?": examine
+  spearhead(?:s|ed|ing)?: lead
+  embark(?:s|ed|ing)?: start
+  unveil(?:s|ed|ing)?: show
+  plethora: many
+  myriad: many
+  synergy: overlap
+  meticulous: careful
+  commendable: good
+  simply: delete this
+  easily: delete this
+  effortlessly: delete this
+  landed: merged
+  shipped: released
+  "out of the box": by default
+  "enables? you to": you can
+  "allows? you to": you can
+  "is designed to": say what it does
+  "aims to": say what it does
+  "gracefully handles": say what it does, such as "retries three times, then fails to the DLQ"
+  "it is worth noting that": delete this and state the fact
+  "it's important to": delete this and state the fact
+  "pushed over the finish line": merged
+  "stood up": added
+  whilst: while
+  Moreover: delete this
+  Furthermore: delete this
+  Notably: delete this
+  Importantly: delete this
+  Indeed: delete this
+  "as of my last knowledge update": delete this
+  "in this section": delete this

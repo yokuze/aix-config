@@ -1,33 +1,40 @@
 # Terms with no plain-English use in my writing. Blocked, not reported.
 #
-# These are metaphors and intensifiers that stand in for a fact. Each reads as an
-# explanation without carrying one, which is the failure this style exists to stop.
+# These are metaphors and intensifiers. A sentence that uses one looks like an explanation
+# but contains no fact.
 # Reaching for one of these means a value is missing. Go and get the value.
 #
 # Consumed by:
 #   - vale (https://vale.sh), if installed
 #   - hooks/check-prose.mjs, which shells out to it
 extends: existence
-message: "'%s' is a label, not an explanation. Name the thing or give the value."
+message: "'%s' is a metaphor or intensifier, not a fact. Write the specific object, or the measured value."
 level: error
 ignorecase: true
 tokens:
   # Metaphors that replace a mechanism with an image
   - load.bearing
-  - blast radius
-  - happy path
-  - guardrail
+  # Every noun below spells its plural. Vale wraps each token in `\b`, so `guardrail`
+  # read "guardrail" and said nothing about "guardrails".
+  - blast radi(?:us|i)
+  - happy paths?
+  - guardrails?
   - belt.and.suspenders
   - under the hood
   - belt.and
   - gat(?:e|es|ed|ing)
   - gatekeepers?
   # Vague nouns that name a category instead of the thing
-  - tapestry
-  - realm
-  - beacon
-  - testament
-  - seam
+  - tapestr(?:y|ies)
+  - realms?
+  - beacons?
+  - testaments?
+  - seams?
+  # "Taken, in the shape you named" and "the response shape" both stand in for the
+  # fields, the signature or the type. Say which one. The literal visual cue stays
+  # allowed where it sits in a list beside color: "icon shape", "patterns or shapes",
+  # "shapes or markings", "text and shape".
+  - (?<!(?:icon|and|or)\s)shap(?:e|es|ed)(?!\s+or\b)
   - surface
   - machinery
   - mechanisms?
@@ -53,7 +60,19 @@ tokens:
   - game.chang(?:er|ers|ing)
   # Verbs that claim progress without naming it
   - foster
-  - (?-i)underscore[sd]?\s+(?:the|how|that|why|a|an|our|its|their)
+  # The `(?-i:...)` group has to close. Vale joins every token in this file into one
+  # alternation, and a bare `(?-i)` turns case-insensitivity off for the rest of that
+  # pattern, so each token listed below it stopped matching a capital.
+  - (?-i:underscore[sd]?)\s+(?:the|how|that|why|a|an|our|its|their)
   - unravel
   - travel(?:s|ed|led|ing|ling)?
   - carr(?:y|ies|ied|ying)
+  # Verbs of arrival and position, which describe motion instead of the operation.
+  # "Where a new flow lands" wants the identifier, `rootPath`. "The root the tab holds
+  # now" wants `tabDef.rootPath`. "Sits at its root" wants `stack.size === 1`. Each token
+  # requires a following preposition, so "the assumptions hold" passes.
+  - land(?:s|ed|ing)?\s+(?:on|at|in|onto)\b
+  - sits?\s+(?:at|in|on|above|below|under|beneath)\b
+  - holds?\s+now\b
+  - stands?\s+in\b
+  - in step\b

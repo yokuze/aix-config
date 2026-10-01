@@ -2,6 +2,9 @@
 # quoting a spec, an API name, or someone else's copy, and a false positive should not
 # stop a turn.
 #
+# A word with no such use belongs in substitutions-strict.yml, which blocks and keeps this
+# same message. Every word left here has a real exception, recorded beside it.
+#
 # Keys are regular expressions. Verb forms are spelled out, because Vale matches the
 # pattern literally and does not stem: "leverage" alone will not catch "leverages".
 #
@@ -11,52 +14,26 @@ message: "Write '%s' instead of '%s'."
 level: warning
 ignorecase: true
 swap:
-  leverag(?:e|es|ed|ing): use
-  utiliz(?:e|es|ed|ing): use
-  facilitat(?:e|es|ed|ing): help
-  streamlin(?:e|es|ed|ing): make faster
-  "delv(?:e|es|ed|ing)(?: into)?": examine
-  spearhead(?:s|ed|ing)?: lead
-  embark(?:s|ed|ing)?: start
-  unveil(?:s|ed|ing)?: show
+  # `highlight` is the text-marking feature in a reader app, so the noun and the verb both
+  # have a correct use.
   highlight(?:s|ed|ing)?: show
-  plethora: many
-  myriad: many
   paradigm: approach
   landscape: name the subject, or "orientation" for a screen
-  synergy: overlap
+  # `intrinsic` is a CSS keyword: `width: intrinsic`, intrinsic sizing.
   intrinsic: built in
-  meticulous: careful
-  commendable: good
   nuanced: say what the distinction is
   intricate: say what makes it complex
-  simply: delete this
-  easily: delete this
-  effortlessly: delete this
+  # "Tightened the bound" and "a hardened build" both say something real.
   hardened: say what changed
   tightened: say what changed
-  landed: merged
-  shipped: released
+  # "Drove the app from the webview" describes running a test against a live app.
   drove: led
+  # The abstract sense is the problem: "where a new flow lands". A ball landing in a
+  # target ring and a plane landing are the literal verb, so this reports rather than
+  # blocks. vague.yml still blocks the form before a preposition, "lands on the root".
+  "lands(?!\\s*page)": give the identifier or the value
   rallied: say what happened
-  "out of the box": by default
   "under the hood": internally
-  "enables? you to": you can
-  "allows? you to": you can
-  "is designed to": say what it does
-  "aims to": say what it does
-  "gracefully handles": say what it does, such as "retries three times, then fails to the DLQ"
-  "it is worth noting that": delete this and state the fact
-  "it's important to": delete this and state the fact
-  "pushed over the finish line": merged
-  "stood up": added
+  # A quoted spec can use either.
   "not only": say the thing once
   "and/or": pick one, or write "X, or Y, or both"
-  whilst: while
-  Moreover: delete this
-  Furthermore: delete this
-  Notably: delete this
-  Importantly: delete this
-  Indeed: delete this
-  "as of my last knowledge update": delete this
-  "in this section": delete this
