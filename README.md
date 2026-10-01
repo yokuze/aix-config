@@ -1,181 +1,67 @@
 # aix-config
 
-[AIX](https://github.com/a1st-dev/aix) config, skills, and prompts.
+Shared [AIX](https://github.com/a1st-dev/aix) configuration, skills, MCP servers, rules, and prose quality tools.
 
-## Set up a New Repo
+## Installation
+
+Install all configuration into a project with AIX:
 
 ```bash
 npx @a1st/aix install https://github.com/yokuze/aix-config/blob/main/ai.json
 ```
 
-## Writing style
+Or install specific sections globally
 
-One test decides whether a sentence is worth sending. If it refers to a thing, name that
-thing. If it asserts a behavior, give the value or say where the behavior is defined. A
-sentence with neither is a label, and a label reads as an explanation and gives none.
+```bash
+# Install all sections globally
+npx @a1st/aix install --user
 
-| File | Contents |
-|---|---|
-| `output-styles/plain-english.md` | the rules, and the only copy of them |
-| `styles/plain-english/vague.yml` | terms with no plain use. Blocked |
-| `styles/plain-english/jargon.yml` | terms with several plain uses. Blocked |
-| `styles/plain-english/ambiguous.yml` | terms with several plain uses. Reported |
-| `styles/plain-english/substitutions.yml` | terms with a plain replacement. Reported |
-| `styles/plain-english/british.yml` | British spellings. Blocked. Generated |
-| `hooks/check-prose.mjs` | agent hook: checks replies, written files and Bash heredocs |
-| `rules/writing.md` | a pointer to the output style |
-| `.vale.ini` | vale's config. `@vvago/vale` is a devDependency |
-| `lib/prose.mjs` | the vale calls, and which `.vale.ini` governs a path |
-| `bin/lint-prose.mjs` | the linter. Takes paths, so it can be scoped |
-| `bin/build-british.mjs` | rebuilds `british.yml` from VarCon |
-| `docs/vale-editor-setup.md` | VS Code, Zed and Devin |
+# Or install specific sections
+npx @a1st/aix install --only rules --user
+npx @a1st/aix install --only skills --user
+npx @a1st/aix install --only agents --user
+npx @a1st/aix install --only hooks --user
+```
 
-Editor setup for VS Code, Zed and Devin is in `docs/vale-editor-setup.md`.
+## Repository Structure
 
-| Command | Does |
-|---|---|
-| `npm run lint:prose` | lints the content directories, named explicitly |
-| `node bin/lint-prose.mjs <path...>` | lints just those files or directories |
-| `npm run test:prose` | checks the Vue two-pass, the heredoc parser and the hook's three events |
-| `npm run build:british` | refetches VarCon and rewrites `british.yml` |
+* `skills/`: Reusable agent skills (`app-store-readiness`, `learn`, `new-repo-setup`, etc.)
+* `agents/`: AIX subagent definitions (`app-store-readiness`, `write-app-store-copy`)
+* `rules/`: Agent guidelines for Git, TypeScript, Vue, Tauri, testing, and prose
+* `prompts/`: Standard workflow prompts (`plan`, `implement-plan`, `commit`, etc.)
+* `styles/`: Vale prose linter rules for plain English, banned jargon, and US spelling
+* `hooks/`: Agent lifecycle hooks (e.g., `check-prose.mjs`)
+* `lib/` and `bin/`: CLI tooling and tests for prose verification
 
-`aix` 0.6.0 installs skills, MCP servers, rules and prompts. It does not install output
-styles, hooks or vale, so those are set up by hand:
+## Prose Linting & Hooks
+
+This repository includes a Vale-based plain-English prose checker that flags vague
+language, jargon, and British spellings in documentation, comments, and agent outputs.
+
+### Setup
+
+Install the Vale binary and dependencies:
 
 ```bash
 npm install
+```
+
+Configure hooks and output styles for Claude Code:
+
+```bash
+# Install prose checking hooks
+npx @a1st/aix install --only hooks --user
+
+# Link output style and Vale configuration
 ln -sf "$PWD/output-styles/plain-english.md" ~/.claude/output-styles/plain-english.md
-ln -sf "$PWD/hooks/check-prose.mjs" ~/.claude/hooks/check-prose.mjs
 ln -sfn "$PWD" ~/.claude/vale
 ```
 
-`npm install` fetches the vale binary, at `node_modules/@vvago/vale/bin/vale`. The hook
-shells out to it, and so does `vale-ls`, which has no vale of its own. The last link is how
-a language server or another project finds this config, and that binary, when a workspace
-has no `.vale.ini`. Without the install, `vale-ls` logs "Vale CLI not installed!" and
-reports nothing.
+### CLI Commands
 
-Then add the hook to `~/.claude/settings.json`, on all three events:
+* `node bin/lint-prose.mjs <paths...>`: Lint specific files or directories
+* `npm run lint:prose`: Lint all repository content directories
+* `npm run test:prose`: Run unit tests for prose checking logic
+* `npm run build:british`: Rebuild the British English word list from VarCon
 
-```json
-{
-   "hooks": {
-      "Stop": [ { "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ],
-      "PostToolUse": [ { "matcher": "Write|Edit", "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ],
-      "PreToolUse": [ { "matcher": "Bash", "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
-   }
-}
-```
-
-`PostToolUse` checks the file just written, which is the half a reply check cannot see: a
-doc or a code comment written during a turn never appears in the chat. A `.vue` file gets
-the second pass there too. An `Edit` is checked on its replacement's own lines, so a file
-that already has a banned term elsewhere does not block work that never touched it.
-
-Every file is checked, whatever its extension. The `[*]` section in `.vale.ini` sets the
-rules, and the section under it lists the data formats to skip: JSON, CSV, lockfiles and
-the rest, where a listed word inside a string value is not prose. That section is the one
-to edit, and a project's own `.vale.ini` replaces it. Binary formats never reach vale at
-all, from the `NOT_TEXT` set in `lib/prose.mjs`.
-
-`PreToolUse` checks the prose in a Bash command before it runs, and a denied command does
-not run. Merge request descriptions and commit messages reach a forge that way, and neither
-of the other two events sees them. They arrive as a heredoc, written to a file or piped into
-`git commit`, `glab` or `gh`, or as a quoted argument to `-m`, `--description` or
-`--body`. A review comment arrives a third way, as a JSON request body under `-d`, where
-`note`, `body`, `description`, `title` and `message` are read at any depth. A heredoc
-written to a source file is read for its comments. One feeding an interpreter is code and
-is left alone.
-
-`Stop` checks the reply, and it cannot filter one. It fires after the text has streamed,
-so blocking only keeps the turn open and the correction arrives as a second message. No
-hook event runs before an assistant message reaches the user. The reply comes from the
-payload's `last_assistant_message`. The hook blocks at most twice per prompt, counting in
-the session's scratchpad, so the corrected reply is checked too and the turn still ends.
-
-The rules come from the nearest `.vale.ini` above the file being checked, or above the
-working directory for a reply. A project that points at its own vale package is therefore
-checked with its own rules and its own vocabulary, and this repo's config is the fallback
-for a project with none. When that project's packages are not synced, or its copy of one
-is out of date, the hook says so rather than passing the text silently.
-
-All three block on `vague.yml`, `jargon.yml` and `british.yml`, and on `Vale.Repetition`,
-which catches a word typed twice in a row. They also block on em dashes and semicolons in
-prose: the reply, a `.md` or `.mdx` file, and a prose heredoc, where a semicolon is not a
-statement terminator. None blocks on `ambiguous.yml` or `substitutions.yml`, because those words
-have a legitimate use when quoting a spec or someone else's copy, and a false positive
-should not stop a turn. vale parses Markdown and source comments, so a symbol named `mechanism` is not
-a hit, and a `colourScheme` in backticks is not one either.
-
-## Using these rules in another project
-
-`.vale.ini` and `styles/` together are a vale package, and vale accepts a local directory
-as a package. Nothing needs building, zipping or publishing: another project points at this
-checkout and runs `vale sync`.
-
-```ini
-StylesPath = .vale-styles
-MinAlertLevel = warning
-
-Packages = /absolute/path/to/aix-config
-```
-
-`vale sync` copies `.vale.ini` and `styles/` into that project's `StylesPath` and ignores
-the rest of this repo, so a sync is four files and 72K rather than a copy of the skills.
-The generated `StylesPath` belongs in that project's `.gitignore`.
-
-Four things about that path decide whether it works, and each one fails quietly:
-
-* **It has to be absolute.** vale resolves a relative `Packages` entry against the working
-  directory, not against the `.vale.ini` holding it, and the linter and the hook both run
-  beside their own config rather than beside the project being checked.
-* **`~` and `$HOME` are not expanded.** Write the path out.
-* **It must not be a symlink.** vale fails to derive a package name from one, recurses,
-  and dies with `fatal error: stack overflow`. Resolve the link first, with `pwd -P`.
-* **Package folder basenames must differ.** vale names each synced config after the
-  package folder's basename, so two packages in folders of the same name overwrite each
-  other's config. The loser takes its rules with it and vale still exits 0, which reads as
-  clean prose.
-
-A sync is a copy, so every consumer keeps its own snapshot of these rules. Editing a rule
-here changes nothing for them until each one syncs again, and `vale sync` does not replace
-a package already in `StylesPath`. It reports success and leaves the old files. Delete
-`StylesPath` and sync, which is what a project's setup script should do. `syncProblem` in
-`lib/prose.mjs` compares the two copies and the hook reports the difference, so a stale
-consumer says so instead of checking against rules nobody has now.
-
-Because that path is machine-specific, a project sharing a repo with other people should
-generate its `.vale.ini` rather than commit one, and git-ignore the result. A short setup
-script that resolves this checkout and writes the file keeps every checkout path out of
-the tree. When the file is missing, the hook walks up, finds nothing, and falls back to
-this repo's config, so an unconfigured clone gets these rules rather than none.
-
-A project with terminology of its own does not add words here. It puts a `Vocab` in a
-package of its own and names both packages in order, general first. vale applies the
-layers left to right and the last one wins, so a word accepted downstream overrides a rule
-from here without touching the word lists. Private terminology stays in the private
-package, which is the point of the split.
-
-## After you edit a file here
-
-What reaches Claude Code, and when:
-
-| Edited | Reaches Claude Code |
-|---|---|
-| `styles/plain-english/*.yml` | next tool call. The hook re-reads them every time |
-| `.vale.ini` | next tool call, same reason |
-| `output-styles/plain-english.md` | next session. Symlinked, but read once at startup |
-| `hooks/check-prose.mjs` | next tool call. Symlinked |
-| `rules/*.md` | **only after installing.** See below |
-
-`~/.claude/rules/` contains copies rather than symlinks, so a rule edited here does not reach
-a session until it is installed:
-
-```bash
-npx @a1st/aix install --only rules --target claude-code --user
-```
-
-Add `--dry-run` first to see what it would change.
-
-Do not symlink `~/.claude/rules/` to skip that step. The next `aix install` replaces the
-symlink with a copy, so the rule would go stale again with nothing to show it happened.
+For editor integration (VS Code, Zed, Devin), see [`docs/vale-editor-setup.md`](./docs/vale-editor-setup.md).
