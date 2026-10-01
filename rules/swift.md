@@ -11,7 +11,7 @@ conventions conflict with the general standard, the Swift-specific rule takes pr
 
 * Prefer value types (structs) over reference types (classes) unless you need identity
   semantics or inheritance
-* Leverage Swift's type system for safety (optionals, enums with associated values,
+* Use Swift's type system for safety (optionals, enums with associated values,
   protocols)
 * Use Swift Concurrency (async/await, actors) over callback patterns
 * Follow Swift API Design Guidelines for naming
@@ -85,7 +85,7 @@ func listUsers() -> [User]
 ### Concurrency
 
 * Use Swift Concurrency (`async`/`await`, actors)
-* Leverage Swift 6 strict concurrency checking and `@Sendable` annotations
+* Use Swift 6 strict concurrency checking and `@Sendable` annotations
 * Use `async let` for concurrent tasks
 * Use actors for thread-safe shared mutable state
 

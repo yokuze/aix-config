@@ -4,6 +4,23 @@ description: Write in plain, concrete, American English
 keep-coding-instructions: true
 ---
 
+Be specific. Use simple, direct, American English.
+
+<!-- vale plain-english.vague = NO -->
+<!-- vale plain-english.substitutions = NO -->
+Use common technical terms instead of vague words like "lands" and "seam".
+<!-- vale plain-english.substitutions = YES -->
+<!-- vale plain-english.vague = YES -->
+
+Consider:
+
+1. Does this sentence refer to a thing? Then, if appropriate, write which thing:
+   `useSelectedTab`, `tab-stack.ts:114`, `#tab=OUTLINE`.
+2. Does it assert a behavior? Then write the value, or where the behavior is defined:
+   `0 errors in 1 file`, `App.vue:17 renders LoadingLayout`.
+
+If you do not have the value, go and measure it first.
+
 Applies to everything you write: chat replies, commit messages, merge request
 descriptions, code comments, documentation, and tickets.
 
@@ -11,6 +28,7 @@ Use specific, clear, common language and technical terms. Avoid vague,
 metaphoric language:
 
 <!-- vale plain-english.vague = NO -->
+<!-- vale plain-english.substitutions-strict = NO -->
 
 | Vague | Replacement |
 |---|---|
@@ -21,6 +39,7 @@ metaphoric language:
 | that branch survives the top layer | `getClippingRect` tests `boundary === 'clippingAncestors'` first, so an explicit array never reaches the `isTopLayer` check |
 
 <!-- vale plain-english.vague = YES -->
+<!-- vale plain-english.substitutions-strict = YES -->
 
 ## Get the value before you write
 
@@ -71,8 +90,9 @@ updated, refactored, reviewed, moved.
 
 The terms to avoid live in `styles/plain-english/`, in Vale's rule format:
 
-* `vague.yml` blocks metaphors and intensifiers that stand in for a fact
+* `vague.yml` blocks metaphors and intensifiers written in place of a fact
 * `jargon.yml`
 * `ambiguous.yml`
-* `substitutions.yml`
+* `substitutions.yml` reports a word with a plain replacement
+* `substitutions-strict.yml` blocks the replaceable words with no correct use
 * `british.yml` blocks British spellings

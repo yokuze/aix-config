@@ -20,7 +20,7 @@ Follow these standards:
 * Use template literals when they improve readability; avoid multi-line template literals
 * Use `String()` for explicit string conversion
 * Prefer `async/await` over Promise chaining
-* Always wrap comments to utilize the full line length
+* Always wrap comments to use the full line length
 * Code must be 140 characters or less; comments must be 91 characters or less
 
 ## ABSOLUTELY DO NOT
@@ -74,7 +74,7 @@ const a = 1,
 * Use default parameter values instead of null/undefined checks
 * Use RO-RO (Receive Object, Return Object) for passing and returning multiple parameters
 * Use rest parameters instead of `arguments`
-* Point-free style: when a callback is simply a direct function reference, pass it
+* Point-free style: when a callback is a direct function reference, pass it
   directly (good: `rules.map(lankFromRule)`, bad: `rules.map((rule) => { return
   lankFromRule(rule); })`)
 

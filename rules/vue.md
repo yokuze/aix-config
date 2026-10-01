@@ -261,7 +261,8 @@ block so consumers can import them alongside the component.
 If the component library must render in both browser and Node.js environments:
 
 * Do not access `window`, `document`, `navigator`, or other browser globals at the top
-   level of `<script setup>`. Guard behind `onMounted` or `typeof window !== 'undefined'`
+   level of `<script setup>`. Access them inside `onMounted` or after a
+   `typeof window !== 'undefined'` check
 * Prefer VueUse composables (SSR-safe by default)
 * All custom directives must implement the `getSSRProps` hook so Vue's SSR renderer can
    produce correct attributes without mounting the directive in a DOM:

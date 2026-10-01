@@ -3,7 +3,7 @@ description: "Write clear, specific prose that sounds human. Avoid patterns comm
 ---
 
 If you do not already have the Plain English output style in your context, read this file:
-@./styles/plain-english.md
+@../output-styles/plain-english.md
 
 <!-- vale plain-english.vague = NO -->
 Avoid metaphors, figures of speech, and vague words like "carries", "holds" or "names".
