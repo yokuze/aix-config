@@ -72,7 +72,7 @@ function locate(file) {
 
 // A source file's strings are what vale never reads. The pass masks the rest of the file
 // and lints what is left, so the reported line and column still point at the call. Seven
-// shapes are read here: a describe name, a test name, an assertion message, a
+// call forms are read here: a describe name, a test name, an assertion message, a
 // `.description()`, an `.option()` help string, a log line and a thrown error. The fixture
 // also holds a file path, a code span and a regex, none of which this pass reads.
 const located = locate('test-fixtures/sample.test.ts');
@@ -86,7 +86,7 @@ assert.deepEqual(located, [
    '20:21 vital',
    '21:26 crucial',
 ]);
-process.stdout.write(`Source strings read seven call shapes: ${located.length} terms\n`);
+process.stdout.write(`Source strings read seven call forms: ${located.length} terms\n`);
 
 // A prompt body assigned to a name has no call to anchor on, so the file opts in with a
 // `prose-lint: strings` comment. The assignment, the `+` continuation and the array element
@@ -302,8 +302,11 @@ assert.deepEqual(
       .map((a) => { return `${a.Line} ${a.Severity} ${a.Check} ${JSON.stringify(a.Match)}`; })
       .sort(),
    [
-      '13 error plain-english.jargon "names\\nthe"',
+      '13 error plain-english.jargon "it names"',
       '22 error plain-english.vague "underscores\\nthe"',
+      '32 error plain-english.jargon "you named"',
+      '32 error plain-english.vague "shape"',
+      '33 error plain-english.jargon "you named"',
    ],
 );
 process.stdout.write(`Every recorded miss is caught: ${Object.values(escaped).flat().length} of them\n`);
@@ -324,7 +327,7 @@ const scriptAlerts = (lintText(script[0].body, script[0].ext) ?? [])
    .map((a) => { return a.Match; })
    .sort();
 
-assert.deepEqual(scriptAlerts, [ 'carries', 'surface' ]);
+assert.deepEqual(scriptAlerts, [ 'carries', 'shape', 'surface' ]);
 process.stdout.write(`A script heredoc is read as the file it writes: ${scriptAlerts.join(', ')}\n`);
 
 // A one-sentence doc comment is shorter than any character floor, and it is still prose.

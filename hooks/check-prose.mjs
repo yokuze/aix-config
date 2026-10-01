@@ -1,18 +1,17 @@
 #!/usr/bin/env node
-// Checks the agent's writing against the Plain English word lists, at the four points
+// Checks the agent's writing against the Plain English word lists, at the three points
 // where prose leaves the session.
 //
 //   Stop          the reply, after it has been sent
 //   SubagentStop  a subagent's report, which its parent reads and often quotes
-//   PostToolUse   the file just written or edited
-//   PreToolUse    the prose inside a Bash command, before the command runs
+//   PreToolUse    a Bash command's prose, and a Write or Edit, before either one runs
 //
 // Stop cannot filter anything. It fires once the reply has already streamed to the user,
 // and blocking it only stops the turn from ending, so the correction arrives as a second
 // message. The reply comes from `last_assistant_message` in the payload. The transcript
 // file is the fallback, and in a long session it can lag the reply, which read as a pass.
 //
-// SubagentStop is the same check on the same payload shape, for the report a subagent
+// SubagentStop is the same check on the same payload fields, for the report a subagent
 // hands back. Stop never sees that text, because by the time the turn ends
 // `last_assistant_message` is the parent's own reply.
 //
@@ -21,31 +20,31 @@
 // meant the corrected reply went unread. The count of blocks lives in the session's
 // scratchpad, keyed by prompt, and the hook stops after MAX_BLOCKS_PER_PROMPT.
 //
-// PostToolUse runs after the write, but the fix lands before the turn ends and before
-// anyone reads the file. An Edit is checked on its replacement's own lines. The rest of
-// the file may be someone else's, and blocking on text this turn never touched would be
-// wrong. A Write is checked whole, because every line of it is this turn's.
+// PreToolUse is the only event that runs before the text is saved or the command runs, so
+// a denied write leaves no file behind and a denied command never executes. It reads the
+// tool's own input, which is this turn's text and nobody else's: `content` for a Write,
+// `new_string` for an Edit. Reading the saved file instead meant linting lines this turn
+// never touched, then filtering them back out by line number.
 //
-// PreToolUse is the one event that runs before the text lands. Merge request descriptions
-// and commit messages sit inside Bash commands, which the other two events never see,
-// and a denied command does not run. They arrive as a heredoc or as a quoted argument to
-// `-m`, `--description` or `--body`. lib/prose.mjs reads both, and decides which bodies
-// are prose, which are comments, and which are code to leave alone.
+// Merge request descriptions and commit messages sit inside Bash commands, which Stop
+// never sees. They arrive as a heredoc or as a quoted argument to `-m`, `--description`
+// or `--body`. lib/prose.mjs reads both, and decides which bodies are prose, which are
+// comments, and which are code to leave alone.
 //
 // The vale calls live in lib/prose.mjs, which the repo linter uses too, so the word lists
 // and the Vue handling each have one implementation.
 //
 // vale reports `error` for terms with no plain use and `warning` for terms with a plain
-// replacement. Only errors block. A warning has a legitimate use when quoting a spec or
-// someone else's copy, so a false positive there must not stop anything.
+// replacement. On a file or a command, only errors block, because a warning has a
+// legitimate use when quoting a spec or someone else's copy. On a reply, an unanswered
+// warning blocks too: see `keptTerms`.
 //
 // Register in ~/.claude/settings.json:
 //   "Stop":         [ { "hooks": [ { "type": "command", "command": "node $HOME/.claude/hooks/check-prose.mjs" } ] } ]
 //   "SubagentStop": [ { "hooks": [ { ...same... } ] } ]
-//   "PostToolUse":  [ { "matcher": "Write|Edit", "hooks": [ { ...same... } ] } ]
-//   "PreToolUse":   [ { "matcher": "Bash", "hooks": [ { ...same... } ] } ]
+//   "PreToolUse":   [ { "matcher": "Bash|Write|Edit", "hooks": [ { ...same... } ] } ]
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, extname, join } from 'node:path';
 import {
@@ -53,7 +52,6 @@ import {
    configFor,
    isChecked,
    isSkipped,
-   lintFiles,
    lintText,
    proseIn,
    punctuationProblems,
@@ -61,6 +59,7 @@ import {
    trackerProblems,
    valeBinary,
 } from '../lib/prose.mjs';
+import { evidenceProblems } from '../lib/evidence.mjs';
 
 const VALE_FAILED = 'Prose check skipped: vale could not run. Try `vale sync` in this project.',
       MAX_BLOCKS_PER_PROMPT = 2;
@@ -80,7 +79,7 @@ function write(output) {
    process.stdout.write(JSON.stringify(output));
 }
 
-/** Stops the tool call, or the turn, with the reason. Each event has its own shape. */
+/** Stops the tool call, or the turn, with the reason. Each event has its own output fields. */
 function deny(reason) {
    if (event === 'PreToolUse') {
       write({
@@ -180,11 +179,21 @@ function blockCounter() {
    };
 }
 
-function report({ alerts, problems, subject, closing, onBlock = () => { return true; } }) {
+function report({ alerts, problems, subject, closing, kept = null, onBlock = () => { return true; } }) {
    const blocked = alerts.filter((a) => { return a.Severity === 'error'; }),
-         reported = alerts.filter((a) => { return a.Severity === 'warning'; }),
+         warned = alerts.filter((a) => { return a.Severity === 'warning'; }),
+         // A `Kept` line answers one matched word, in the reply it appears in. Warnings a
+         // reply does not answer become blocking problems, because a warning delivered
+         // through `systemMessage` after the turn ends reaches nobody on the last turn.
+         reported = kept ? warned.filter((a) => { return !kept.has(a.Match.toLowerCase()); }) : warned,
          reports = [ ...new Set(reported.map((a) => { return a.Message; })) ].join(' '),
-         notes = reported.length ? `\nAlso reported, your call: ${reports}` : '';
+         notes = reported.length && !kept ? `\nAlso reported, not blocked: ${reports}` : '';
+
+   if (kept && reported.length) {
+      problems.push(...new Set(reported.map((a) => {
+         return `${a.Message} Fix it, or keep it with a line reading: Kept "${a.Match}": <why it is correct here>`;
+      })));
+   }
 
    // Each rule file words its own message, and repeating them beats one sentence written to
    // cover all of them: a British spelling and a vague term need different fixes.
@@ -201,10 +210,11 @@ function report({ alerts, problems, subject, closing, onBlock = () => { return t
 
    // The label test only answers a vague-term block. A misspelling or an em dash has a
    // fix that does not involve going to find a value.
-   const labelTest = blocked.some((a) => { return a.Check === 'plain-english.vague'; })
+   const labelTest = (blocked.some((a) => { return a.Check === 'plain-english.vague'; })
+      || problems.some((x) => { return x.startsWith('States no fact:'); }))
       ? [
          'The test: if a sentence refers to a thing, say which thing. If it asserts a behavior,',
-         'give the value or say where the behavior is defined. A sentence with neither is a label.',
+         'give the value or say where the behavior is defined. A sentence with neither gives the reader no fact.',
          'If you do not have the value, go and measure it, then rewrite.',
       ]
       : [];
@@ -219,41 +229,6 @@ function report({ alerts, problems, subject, closing, onBlock = () => { return t
 
    deny(reason);
    process.exit(0);
-}
-
-/**
- * The line numbers an Edit touched, as [start, end] pairs.
- *
- * An Edit replaces one passage in a file that may be mostly someone else's. Linting the
- * whole file would block on text this turn never touched, so only the replacement's own
- * lines count. Write is different: every line is this turn's, so it needs no filter.
- *
- * Returns null when the replacement cannot be located, which means the file moved on
- * since the edit. Reporting nothing beats reporting against the wrong lines.
- */
-function editedRanges(content, { old_string: removed, new_string: added, replace_all: all }) {
-   if (typeof added !== 'string' || !added.length) {
-      return [];
-   }
-   const ranges = [],
-         lineAt = (index) => { return content.slice(0, index).split('\n').length; },
-         span = added.split('\n').length - 1;
-
-   for (let from = 0; ; ) {
-      const at = content.indexOf(added, from);
-
-      if (at === -1) {
-         break;
-      }
-      const start = lineAt(at);
-
-      ranges.push([ start, start + span ]);
-      if (!all) {
-         break;
-      }
-      from = at + added.length;
-   }
-   return ranges.length ? ranges : (removed === undefined ? [] : null);
 }
 
 function checkCommand() {
@@ -289,44 +264,76 @@ function checkCommand() {
    });
 }
 
+// Reads the text out of a pending Write or Edit, before the tool runs.
+//
+// The text is the tool's own input, so it is this turn's and nobody else's: `content` is
+// the whole new file, `new_string` is the replacement and not one line of the surrounding
+// file. Reading the saved file instead meant linting lines this turn never touched, then
+// filtering them back out by line number.
+//
+// `file_path` is only used to pick the format and to apply the skip lists. The file does
+// not have to exist, which is what a first Write to a new path looks like here.
 function checkFile() {
    const file = payload.tool_input?.file_path ?? '';
 
-   if (!file || isSkipped(file) || !isChecked(file) || !existsSync(file)) {
+   if (!file || isSkipped(file) || !isChecked(file)) {
       process.exit(0);
    }
 
-   // For a Write the whole file is this turn's text. For an Edit only the replacement is.
-   let ranges = [],
-       written = readFileSync(file, 'utf8');
+   const written = payload.tool_name === 'Edit'
+      ? payload.tool_input?.new_string ?? ''
+      : payload.tool_input?.content ?? '';
 
-   if (payload.tool_name === 'Edit') {
-      ranges = editedRanges(written, payload.tool_input ?? {});
-      if (ranges === null || !ranges.length) {
-         process.exit(0);
-      }
-      written = payload.tool_input.new_string;
+   if (!written.trim()) {
+      process.exit(0);
    }
 
    standDownIfUnsynced(dirname(file));
 
-   // One file, so the scope is as narrow as it gets. No directory is walked.
-   const alerts = lintFiles([ file ]);
+   const alerts = lintText(written, extname(file));
 
    if (alerts === null) {
       write({ systemMessage: VALE_FAILED });
       process.exit(0);
    }
 
-   const found = Object.values(alerts).flat()
-      .filter((a) => { return !ranges.length || ranges.some(([ from, to ]) => { return a.Line >= from && a.Line <= to; }); });
-
    report({
-      alerts: found,
+      alerts,
       problems: PUNCTUATED.has(extname(file)) ? punctuationProblems(written) : [],
-      subject: `What you wrote to ${file}`,
-      closing: 'Fix the file. Do not mention this correction or what you changed.',
+      subject: `What you are writing to ${file}`,
+      closing: 'Send the corrected write. Do not mention this correction or what you changed.',
    });
+}
+
+// Reads the `Kept "<term>": <reason>` lines out of a reply.
+//
+// Scope is one term, in one reply. Nothing is written to disk, so the same word in the
+// next reply blocks again unless that reply answers it too. A term that fired no warning
+// clears nothing, and no `Kept` line clears an error.
+//
+// The reason has to run to 15 characters, so `Kept "drove": x` does not pass. Returns the
+// terms, and a copy of the reply with each quoted term cut out. Linting the original
+// would report the very word the line is about, and the block could never clear. The
+// reason itself stays in the copy and is still read, so a reason that repeats the word
+// reports it again.
+const KEPT_LINE = /^[ \t>*-]*kept\s+["'`]([^"'`]+)["'`]\s*:[ \t]*(.+)$/gim,
+      MIN_REASON = 15;
+
+function keptTerms(reply) {
+   const terms = new Set();
+
+   let forLint = reply;
+
+   for (const [ line, term, reason ] of reply.matchAll(KEPT_LINE)) {
+      if (reason.trim().length < MIN_REASON) {
+         continue;
+      }
+
+      terms.add(term.toLowerCase());
+      forLint = forLint.replace(line, line.replace(/["'`][^"'`]+["'`]\s*:/, ':'));
+   }
+
+   return { terms, forLint };
 }
 
 function checkReply() {
@@ -344,7 +351,8 @@ function checkReply() {
       process.exit(0);
    }
 
-   const alerts = lintText(reply, '.md');
+   const { terms, forLint } = keptTerms(reply),
+         alerts = lintText(forLint, '.md');
 
    if (alerts === null) {
       write({ systemMessage: VALE_FAILED });
@@ -353,9 +361,13 @@ function checkReply() {
 
    report({
       alerts,
-      problems: punctuationProblems(reply),
+      // Only the reply blocks on this. A note or a code comment generalizes on purpose, and
+      // 62 of 287 existing vault notes report at this threshold, so a block on a file would
+      // be wrong. The reply is what the style is written for.
+      problems: [ ...punctuationProblems(forLint), ...evidenceProblems(forLint) ],
       subject: 'Your reply',
       closing: 'Send the corrected text only. Do not mention this correction or what you changed.',
+      kept: terms,
       onBlock: rounds.record,
    });
 }
@@ -365,10 +377,13 @@ if (!valeBinary()) {
    process.exit(0);
 }
 
+// PreToolUse fires for three tools. A Bash command's prose is inside `command`, and a
+// Write or Edit is in `content` or `new_string`. Both are read before the tool runs, so
+// nothing is saved and no command executes until the text passes.
 if (event === 'PreToolUse') {
-   checkCommand();
-}
-if (event === 'PostToolUse') {
+   if (payload.tool_name === 'Bash') {
+      checkCommand();
+   }
    checkFile();
 }
 checkReply();
