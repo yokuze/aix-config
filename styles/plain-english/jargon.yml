@@ -33,3 +33,11 @@ tokens:
   # after it, so "if you name the file" reaches ambiguous.yml and is reported, not blocked.
   - (?:I|you|we|they|he|she|it|who)\s+(?:(?:\w+ly|just|already|also)\s+)?nam(?:es|ed)
   - (?:I|you|we|they)\s+(?:(?:\w+ly|just|already|also)\s+)?name(?!\s+(?:the|a|an|it|its|your|our|their|this|that|these|those|each|every)\b)
+  # The imperative at the start of a sentence: "Name `useFoo`", "Name the file". A review
+  # comment that opens this way asks the author to mention, list or rename something, and
+  # does not say which. In Markdown, vale replaces an inline code span with `***`. In a
+  # source comment, the backtick stays. The lookahead matches both. The match stops before
+  # the code span, because vale cannot find a match that contains `***` in the source line
+  # and drops the alert. A capital `N` and a following object keep "Name collisions" and
+  # "the name `foo`" out.
+  - (?<=(?:^|[.!?:])\s*)(?-i:Name)(?=\s+(?:\*\*\*|`|(?:the|a|an|its|their|our|this|that|these|those|each|every|what|which|where|who|how)\b))

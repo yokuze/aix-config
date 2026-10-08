@@ -35,3 +35,18 @@ export function wrappedTwoWordPattern(): void {
 export function objectBeforeNameVerb(): void {
    return;
 }
+
+/**
+ * 2026-10-08, orch skills/run-task/SKILL.md line 180, and review comments that open with
+ * the same imperative. Vale reported it as a warning at most, and the version before a
+ * code span not at all.
+ *
+ * Cut every sentence that
+ * states no fact, and no metaphors (`belt-and-suspenders`, `guardrails`). Name the
+ * specific, commonly used technical term instead.
+ *
+ * Name `useSelectedTab` in the summary.
+ */
+export function sentenceInitialNameVerb(): void {
+   return;
+}

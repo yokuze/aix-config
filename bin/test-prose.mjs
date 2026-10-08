@@ -262,7 +262,7 @@ for (const command of [
    assert.match(result.hookSpecificOutput.permissionDecisionReason, /Name the/);
 }
 
-const keptComment = 'Name the output file `config.json`.\n\nKept "Name the": this instruction assigns the literal filename.';
+const keptComment = 'The swap file `.config.json.swp` is left behind.\n\nKept "swap": this is the editor\'s swap file.';
 
 for (const [ notes, blocks ] of [
    [ [ { note: keptComment } ], false ],
@@ -367,6 +367,11 @@ assert.deepEqual(
       '32 error plain-english.jargon "you named"',
       '32 error plain-english.vague "shape"',
       '33 error plain-english.jargon "you named"',
+      '45 error plain-english.jargon "Name"',
+      '45 error plain-english.vague "belt-and-suspenders"',
+      '45 error plain-english.vague "guardrails"',
+      '45 warning plain-english.ambiguous "Name the"',
+      '48 error plain-english.jargon "Name"',
    ],
 );
 process.stdout.write(`Every recorded miss is caught: ${Object.values(escaped).flat().length} of them\n`);
