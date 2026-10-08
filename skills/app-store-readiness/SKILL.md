@@ -26,7 +26,7 @@ release requirement; do not label an app "production-ready" because it builds lo
   notices wherever each dependency license requires them; use an in-app view when that is
   the practical or required delivery channel. See `references/legal-and-product.md`.
 - When the user asks for step-by-step instructions, write a click-by-click procedure rather than
-  a release outline. Name the console and page, exact field values, every applicable checkbox or
+  a release outline. List the console and page, exact field values, every applicable checkbox or
   capability, what to leave off, required files or credentials, the save or submit action,
   expected result, and evidence to retain. Derive selections from the final manifest,
   entitlements, permissions, and product scope. Never say only "configure signing", "enable
