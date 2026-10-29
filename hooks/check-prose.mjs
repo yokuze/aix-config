@@ -51,6 +51,7 @@ import {
    PUNCTUATED,
    configFor,
    isChecked,
+   isShellScript,
    isSkipped,
    lintText,
    proseIn,
@@ -310,6 +311,12 @@ function checkFile() {
 
    const ext = extname(file),
          docs = ext === '.json' ? proseInJSON(written) : [ { body: written, ext, prose: PUNCTUATED.has(ext) } ];
+
+   // A shell script is a command that runs later, so its heredocs and messages get the
+   // same check a Bash command gets now.
+   if (isShellScript(file, written)) {
+      docs.push(...proseIn(written));
+   }
 
    if (!docs.length) {
       process.exit(0);
