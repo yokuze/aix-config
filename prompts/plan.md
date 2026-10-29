@@ -105,7 +105,7 @@ One short paragraph summarizing the goal and outcome.
 8. Add minimal README with quickstart
 9. Verify by running:
    ```sh
-   npm ci && npm run standards && npm run test
+   npm i && npm run standards && npm run test
    ```
 
 ## 9) New Code
