@@ -50,6 +50,7 @@
    },
    "rules": {
       "general": "./rules/general.md",
+      "front-end": "./rules/front-end.md",
       "css-scss": "./rules/css-scss.md",
       "do-not": "./rules/do-not.md",
       "git": "./rules/git.md",

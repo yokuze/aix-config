@@ -76,8 +76,3 @@
 * Do not comment on types, parameters, or usage that are clear from code or naming
 * Use ASCII in comments, never unicode symbols
 * No commented-out code
-
-## Front-End Development
-
-* Pay attention to the current version of the component, and use a similar pattern as
-  set by existing elements
