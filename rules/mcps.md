@@ -1,6 +1,7 @@
 * If you make UI changes, use MCP tools to test them in a real environment
-   * Use the Tauri MCP when working within a Tauri app
-   * Use Playwright or browser-use for other projects
+   * Use the Tauri MCP when working within a Tauri app. Use agent-device for anything the
+     Tauri MCP can't do
+   * Use or browser-use for other projects
 * Use the fallow MCP in a TypeScript or JavaScript project before deleting an export, a
   file, or a dependency, and before opening an MR. `trace_export` and `impact_closure`
   list the consumers, `audit` reads the changed files, and `inspect_target` gathers the
