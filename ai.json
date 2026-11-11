@@ -15,6 +15,16 @@
       },
       "mobile-game-patterns": {
          "path": "./skills/mobile-game-patterns/"
+      },
+      "modern-web-guidance": {
+         "git": "https://github.com/GoogleChrome/modern-web-guidance",
+         "ref": "main",
+         "path": "skills/modern-web-guidance"
+      },
+      "agent-desktop": {
+         "git": "https://github.com/vercel-labs/agent-desktop",
+         "ref": "main",
+         "path": "skills/agent-desktop"
       }
    },
    "mcp": {
