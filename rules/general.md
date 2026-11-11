@@ -66,13 +66,14 @@
 
 ## Documentation
 
-* Use en-US spelling and grammar for all code and documentation. Do not use British
-  English spelling.
-* JSDocs are required for all public APIs and for key internal functions
+* Use en-US spelling and grammar, not British.
 * No useless comments e.g. do not add `/** Creates the foo */` to `createFoo()`
    * Only add a comment if:
       * The code's rationale is not obvious from naming/context
       * The comment answers "why," NOT "what" or "how"
+   * Do not write a comment that references how the code changed from a previous 
+     version
+* Be concise and use concrete, common, specific technical terms
 * Do not comment on types, parameters, or usage that are clear from code or naming
 * Use ASCII in comments, never unicode symbols
 * No commented-out code
