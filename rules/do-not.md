@@ -1,6 +1,3 @@
-
-* ABSOLUTELY DO NOT create ad-hoc test scripts. If you absolutely must, clean up those
-  files when you're done
 * ABSOLUTELY DO NOT ignore "pre-existing" TypeScript or linting errors, failing tests, or
   out of date documentation. If you see them, fix them before proceeding
 * ABSOLUTELY DO NOT use `@deprecated` on anything unless you are explicitly asked to.
