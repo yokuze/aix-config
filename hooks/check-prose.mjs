@@ -57,6 +57,7 @@ import {
    proseIn,
    proseInJSON,
    punctuationProblems,
+   REPO_ROOT,
    syncProblem,
    trackerProblems,
    valeBinary,
@@ -400,7 +401,7 @@ function checkReply() {
 }
 
 if (!valeBinary()) {
-   write({ systemMessage: 'Prose check skipped: @vvago/vale is not installed. Run npm install in aix-config.' });
+   write({ systemMessage: `Prose check skipped: @vvago/vale is not installed in ${REPO_ROOT}. Run npm install there.` });
    process.exit(0);
 }
 

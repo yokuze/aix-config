@@ -11,5 +11,8 @@
    },
    "devDependencies": {
       "@vvago/vale": "3.17.1"
+   },
+   "allowScripts": {
+      "@vvago/vale@3.17.1": true
    }
 }
